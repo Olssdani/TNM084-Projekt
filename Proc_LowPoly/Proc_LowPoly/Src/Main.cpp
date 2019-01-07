@@ -17,7 +17,7 @@ void updateTime();
 // settings
 const unsigned int SCR_WIDTH = 1028;
 const unsigned int SCR_HEIGHT = 768;
-Camera camera(glm::vec3(0.0f, 2.0f, 10.0f));
+Camera camera(glm::vec3(0.0f, 50.0f, 10.0f));
 
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
@@ -45,7 +45,7 @@ int main()
 	GLFWmonitor* primary = glfwGetPrimaryMonitor();
 	const GLFWvidmode * mode = glfwGetVideoMode(primary);
 	GLFWwindow* window;
-	if (mode == NULL)
+	if (mode != NULL)
 	{
 		window = glfwCreateWindow(mode->width, mode->height, "Low Poly World", primary, NULL);
 	}
@@ -91,6 +91,9 @@ int main()
 		
 		//Get input
 		processInput(window);
+		if (glfwGetKey(window, GLFW_KEY_SPACE)) {
+			ground.UpdateShader();
+		}
 
 		// render
 		// ------
@@ -98,7 +101,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Get the current projection matrix
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
 		//Get the current view matrix;
 		glm::mat4 view = camera.View();
 
@@ -139,6 +142,10 @@ void processInput(GLFWwindow *window)
 		camera.ProcessKeyboard(camera.LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(camera.RIGHT, deltaTime);
+
+	//Update shaders
+
+
 
 	//Toggle wireframe or solid
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)

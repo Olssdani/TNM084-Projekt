@@ -84,11 +84,13 @@ void Ground::CreateGround(float vert[], unsigned int ind[])
 
 	for (int y = 0; y < SIZE;y++)
 	{
+		float j = (float)y / SIZE;
 		for (int x = 0; x < SIZE; x++)
 		{
-			vert[(x + y * SIZE) * 3] = (float)x;
-			vert[(x + y * SIZE) * 3 + 1] =0+2.0f * abs(noise3(25.0*x, 20.0*y, 0.5));
-			vert[(x + y * SIZE) * 3 + 2] = (float)y;
+			float i = (float)x / SIZE;
+			vert[(x + y * SIZE) * 3] = (float)x+ (float)rand()/RAND_MAX;
+			vert[(x + y * SIZE) * 3 + 1] = std::max(2.0f, 40.0f * abs(noise3(5.0f*i, 5.0f*j, 0.5))) + 0.5f*noise3(20.0f*i, 15.0f*j, 0.5);
+			vert[(x + y * SIZE) * 3 + 2] = (float)y+ (float)rand() / RAND_MAX;
 
 			//std::cout << noise3(25.0*x, 20.0*y, 0.5) << std::endl;
 		}
@@ -119,4 +121,10 @@ void Ground::CreateGround(float vert[], unsigned int ind[])
 	{
 		std::cout << ind[i] << " " << ind[i + 1] << " " << ind[i + 2] << std::endl;
 	}*/
+}
+
+void Ground::UpdateShader()
+{
+	glDeleteProgram(shader->ID);
+	shader = new Shader("Shaders/Vertex.glsl", "Shaders/Fragment.glsl");
 }

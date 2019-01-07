@@ -2,6 +2,8 @@
 #include "shader.h"
 #include "Noise/noise1234.h"
 #include <cmath>
+#include <algorithm>  
+#include <stdlib.h> 
 #define SIZE 100
 class Ground
 {
@@ -11,6 +13,7 @@ public:
 
 	//Render the ground
 	void Render(glm::mat4 projection, glm::mat4 view);
+	void UpdateShader();
 
 private:
 	//Variables
