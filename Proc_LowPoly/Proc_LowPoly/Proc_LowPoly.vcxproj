@@ -22,10 +22,12 @@
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\glad.c" />
     <ClCompile Include="Src\Main.cpp" />
+    <ClCompile Include="Src\Models\Ground.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\glad\glad.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
+    <ClInclude Include="Src\Models\Ground.h" />
     <ClInclude Include="Src\shader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -80,8 +82,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Daniel olsson\Documents\Programmering\TNM084-Projekt\Proc_LowPoly\Proc_LowPoly\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Daniel olsson\Documents\Programmering\TNM084-Projekt\Proc_LowPoly\Proc_LowPoly\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\nille\Desktop\TNM084-Projekt\Proc_LowPoly\Proc_LowPoly\Src;C:\Users\nille\Desktop\TNM084-Projekt\Proc_LowPoly\Proc_LowPoly\Include;C:\Users\Daniel olsson\Documents\Programmering\TNM084-Projekt\Proc_LowPoly\Proc_LowPoly\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\nille\Desktop\TNM084-Projekt\Proc_LowPoly\Proc_LowPoly\Libs;C:\Users\Daniel olsson\Documents\Programmering\TNM084-Projekt\Proc_LowPoly\Proc_LowPoly\Libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\nille\Desktop\TNM084-Projekt\Proc_LowPoly\Proc_LowPoly\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\nille\Desktop\TNM084-Projekt\Proc_LowPoly\Proc_LowPoly\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
