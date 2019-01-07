@@ -1,7 +1,8 @@
 #pragma once
 #include "shader.h"
 #include "Noise/noise1234.h"
-#define SIZE 10
+#include <cmath>
+#define SIZE 100
 class Ground
 {
 public:

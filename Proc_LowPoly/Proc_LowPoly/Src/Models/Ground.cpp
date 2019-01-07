@@ -87,15 +87,17 @@ void Ground::CreateGround(float vert[], unsigned int ind[])
 		for (int x = 0; x < SIZE; x++)
 		{
 			vert[(x + y * SIZE) * 3] = (float)x;
-			vert[(x + y * SIZE) * 3 + 1] = 0.0f;
+			vert[(x + y * SIZE) * 3 + 1] =0+2.0f * abs(noise3(25.0*x, 20.0*y, 0.5));
 			vert[(x + y * SIZE) * 3 + 2] = (float)y;
+
+			//std::cout << noise3(25.0*x, 20.0*y, 0.5) << std::endl;
 		}
 	}
-	for (int i = 0; i < 3 * SIZE*SIZE; i = i+3)
+	/*for (int i = 0; i < 3 * SIZE*SIZE; i = i+3)
 	{
 		std::cout << vert[i] << " " << vert[i+1] << " " << vert[i+2] << std::endl;
 	}
-	std::cout << std::endl;
+	std::cout << std::endl;*/
 	int counter = 0;
 	for (int y = 0; y < SIZE-1; y++)
 	{
@@ -112,9 +114,9 @@ void Ground::CreateGround(float vert[], unsigned int ind[])
 		}
 	}
 
-	std::cout << "Indices" << std::endl;
+	/*std::cout << "Indices" << std::endl;
 	for (int i = 0; i < ((SIZE - 1)*(SIZE - 1))*3*2; i = i + 3)
 	{
 		std::cout << ind[i] << " " << ind[i + 1] << " " << ind[i + 2] << std::endl;
-	}
+	}*/
 }
