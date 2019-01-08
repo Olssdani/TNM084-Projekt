@@ -23,12 +23,14 @@
     <ClCompile Include="Src\glad.c" />
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Models\Ground.cpp" />
+    <ClCompile Include="Src\Models\Water.cpp" />
     <ClCompile Include="Src\noise1234.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\glad\glad.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Models\Ground.h" />
+    <ClInclude Include="Src\Models\Water.h" />
     <ClInclude Include="Src\noise1234.h" />
     <ClInclude Include="Src\shader.h" />
   </ItemGroup>

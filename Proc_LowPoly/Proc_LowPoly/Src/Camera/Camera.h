@@ -40,7 +40,7 @@ private:
 	glm::vec3 forward;
 	float yaw;
 	float pitch;
-	float movementSpeed = 5.0f;
+	float movementSpeed = 10.0f;
 	float mouseSensitivity = 0.1f;
 	float zoom = 45.0f;
 

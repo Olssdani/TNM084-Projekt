@@ -1,30 +1,29 @@
 #pragma once
 #include "shader.h"
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/transform.hpp>
 #include "Noise/noise1234.h"
 #include <cmath>
 #include <algorithm>  
 #include <stdlib.h> 
-//Dies when set to 200, need do figure that shit out
+#include <GLFW/glfw3.h>
+
 #define SIZE 150
-class Ground
+class Water
 {
 public:
-	Ground();
-	~Ground();
-
-	//Render the ground
+	Water();
+	~Water();
 	void Render(glm::mat4 projection, glm::mat4 view);
 	void UpdateShader();
+	void WaterHeight(float a);
 
 private:
 	//Variables
-	Shader *shader;
+	Shader * shader;
 	unsigned int VBO, VAO, EBO;
+	float ypos;
 
-
-	//Functions
-	//Creates the floor
-	void CreateGround(float vert[], unsigned int ind[]);
-	
+	void CreateMesh(float vert[], unsigned int ind[]);
 };
 

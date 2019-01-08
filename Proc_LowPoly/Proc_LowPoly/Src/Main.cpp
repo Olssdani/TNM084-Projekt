@@ -7,6 +7,7 @@
 #include <iostream>
 #include "Camera/Camera.h"
 #include "Models/Ground.h"
+#include "Models/Water.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -45,7 +46,7 @@ int main()
 	GLFWmonitor* primary = glfwGetPrimaryMonitor();
 	const GLFWvidmode * mode = glfwGetVideoMode(primary);
 	GLFWwindow* window;
-	if (mode != NULL)
+	if (mode == NULL)
 	{
 		window = glfwCreateWindow(mode->width, mode->height, "Low Poly World", primary, NULL);
 	}
@@ -60,6 +61,8 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
+
+
 	
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -75,8 +78,14 @@ int main()
 		return -1;
 	}
 
+	printf("GL vendor:       %s\n", glGetString(GL_VENDOR));
+	printf("GL renderer:     %s\n", glGetString(GL_RENDERER));
+	printf("GL version:      %s\n", glGetString(GL_VERSION));
+	printf("Desktop size:    %d x %d pixels\n", mode->width, mode->height);
+
 	//Objects
 	Ground ground;
+	Water water;
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -93,11 +102,17 @@ int main()
 		processInput(window);
 		if (glfwGetKey(window, GLFW_KEY_SPACE)) {
 			ground.UpdateShader();
+			water.UpdateShader();
+			std::cout << "New Shader loaded" << std::endl;
 		}
 
+		if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+			water.WaterHeight(-0.1f);
+		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+			water.WaterHeight(0.1f);
 		// render
 		// ------
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Get the current projection matrix
@@ -106,6 +121,7 @@ int main()
 		glm::mat4 view = camera.View();
 
 		ground.Render(projection, view);
+		water.Render(projection, view);
 
 		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -143,7 +159,7 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(camera.RIGHT, deltaTime);
 
-	//Update shaders
+	//Water height
 
 
 
