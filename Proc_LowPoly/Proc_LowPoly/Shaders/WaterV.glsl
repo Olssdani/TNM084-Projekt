@@ -110,17 +110,12 @@ float snoise(vec3 v)
                                 dot(p2,x2), dot(p3,x3) ) );
   }
 
-
-
-
-
-
-
 void main()
 {
 	vec3 spos = aPos;
-	spos.y = spos.y +0.3*snoise(vec3(0.2*spos.x, 0.1*spos.z, 0.4*Time));
-
+	spos.y = spos.y +0.05*snoise(vec3(0.2*spos.x, 0.1*spos.z, 0.4*Time));
+	spos.x = spos.x +1.0*snoise(vec3(0.2*spos.x, 0.1*spos.z, 0.4*Time));
+	spos.z = spos.z +1.0*snoise(vec3(0.2*spos.x, 0.1*spos.z, 0.4*Time));
     gl_Position = projection*view*model*vec4(spos, 1.0);
 	pos = vec4(spos, 1.0).xyz; 
 }  

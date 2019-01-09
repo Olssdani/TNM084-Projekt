@@ -74,9 +74,9 @@ void Ground::CreateGround(float vert[], unsigned int ind[])
 		for (int x = 0; x < SIZE; x++)
 		{
 			float i = (float)x / SIZE;
-			vert[(x + y * SIZE) * 3] = ((float)x+0.25 + (float)rand() / (2*RAND_MAX));
+			vert[(x + y * SIZE) * 3] = ((float)x + 0.25 +(float)rand() / (2 * RAND_MAX));
 			//vert[(x + y * SIZE) * 3 + 1] = 40.0f * (noise3(5.0f*i, 5.0f*j, 0.5)) + 1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
-			vert[(x + y * SIZE) * 3 + 1] = std::max(2.0f, 40.0f * abs(noise4(5.0f*i, 5.0f*j, 0.5)))+1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
+			vert[(x + y * SIZE) * 3 + 1] = std::max(2.0f, 40.0f * abs(noise3(2.0f*i, 5.0f*j, 0.5)))+1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
 			vert[(x + y * SIZE) * 3 + 2] = ((float)y +0.25+(float)rand() / (2*RAND_MAX));
 		}
 	}

@@ -10,7 +10,7 @@ void main()
 	vec3 LightPos = vec3(0.0,50.0,0.0);
 	vec3 Lightdir = normalize(LightPos-posG);
 	//Dot product between normal an light direction
-	float intensity = max(0.0,dot(Lightdir, NormalG));
+	float intensity = max(0.1,dot(Lightdir, NormalG));
 
 
 	FragColor = vec4(intensity*ourColorG,1.0);
