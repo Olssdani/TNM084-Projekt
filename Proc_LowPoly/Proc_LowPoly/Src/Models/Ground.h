@@ -4,8 +4,11 @@
 #include <cmath>
 #include <algorithm>  
 #include <stdlib.h> 
+#include <vector>
+#include "Utilities.h"
 //Dies when set to 200, need do figure that shit out
 #define SIZE 150
+
 class Ground
 {
 public:
@@ -25,6 +28,8 @@ private:
 	//Functions
 	//Creates the floor
 	void CreateGround(float vert[], unsigned int ind[]);
+
+	void CreateGround(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
 	
 };
 

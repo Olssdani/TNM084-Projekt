@@ -13,11 +13,5 @@ void main()
  
 	pos = vec4(aPos, 1.0).xyz;
     
-    if(aPos.y >20.0)
-    {
-    	 ourColor = vec3(1.0, 1.0,1.0); 
-    }else{
-    	ourColor = vec3(0.0, 1.0,0.0); 
-    }
    // set ourColor to the input color we got from the vertex data
 }  

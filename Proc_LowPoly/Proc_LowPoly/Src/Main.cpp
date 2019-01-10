@@ -8,6 +8,9 @@
 #include "Camera/Camera.h"
 #include "Models/Ground.h"
 #include "Models/Water.h"
+#include "L-System\L_System2D.h"
+#include "Models\Fern.h"
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -86,6 +89,10 @@ int main()
 	//Objects
 	Ground ground;
 	Water water;
+	//Create a fern 
+	//L_System2D fern("X", "[-X]FFF-FF-F0", "F", 2, M_PI / 2.0f, 20.0f*D2R, 1.0f);
+	//fern.CreateSystem();
+	Fern fern;
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -103,6 +110,7 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_SPACE)) {
 			ground.UpdateShader();
 			water.UpdateShader();
+			fern.UpdateShader();
 			std::cout << "New Shader loaded" << std::endl;
 		}
 
@@ -122,6 +130,7 @@ int main()
 
 		ground.Render(projection, view);
 		water.Render(projection, view);
+		fern.Render(projection, view);
 
 		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
