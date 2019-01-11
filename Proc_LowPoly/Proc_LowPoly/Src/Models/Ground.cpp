@@ -3,16 +3,25 @@
 
 
 
-Ground::Ground(int GroundSize, int VertexCount)
+Ground::Ground(int _GroundSize, int _VertexCount)
 {
 	//Shader
 	shader = new Shader("Shaders/Ground/GroundV.glsl", "Shaders/Ground/GroundF.glsl", "Shaders/Ground/GroundG.glsl");
 	
-	//Vertices and indices
-	vertices.resize(SIZE*SIZE);
-	indices.resize((SIZE - 1)*(SIZE - 1) * 3 * 2);
-	CreateMesh(vertices, indices);
+	//Set the noise
+	GroundHeight = glm::vec2(10.0f, -10.0f);
+	BigNoise = glm::vec3(0.0f, 0.0f, 0.0f);
+	SmallNoise = glm::vec3(0.0f,0.0f,0.0f);
+	GroundSmallHeight = 1.0f;
 
+	//Size of grid and number of squares
+	VertexCount = _VertexCount;
+	GroundSize = _GroundSize;
+	SquareSize = GroundSize / VertexCount;
+	//Vertices and indices
+	vertices.resize(VertexCount*VertexCount);
+	indices.resize((VertexCount - 1)*(VertexCount - 1) * 3 * 2);
+	CreateMesh(vertices, indices);
 
 	// Create the buffers
 	glGenVertexArrays(1, &VAO);
@@ -54,83 +63,58 @@ void Ground::Render(glm::mat4 projection, glm::mat4 view)
 	//Start shader
 	shader->use();
 
+
 	//Send variables to shader
 	shader->setMat4("projection", projection);
 	shader->setMat4("view", view);
 	glm::mat4 model = glm::mat4(1.0f);
 	shader->setMat4("model", model);
 
+	shader->setVec3("BigNoise", BigNoise);
+	shader->setVec3("SmallNoise", SmallNoise);
+	shader->setVec2("GroundHeight", GroundHeight);
+	shader->setFloat("GroundSize", GroundSize);
+	shader->setFloat("SmallHeight", GroundSmallHeight);
+
 	//Bind the VAO and draw the vertex
 	glBindVertexArray(VAO);
 	//glDrawArrays(GL_TRIANGLES, 0, 2*SIZE*SIZE);
-	glDrawElements(GL_TRIANGLES, (SIZE - 1)*(SIZE - 1) * 3 * 2, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
 }
 
-//Creates the ground structure
-void Ground::CreateGround(float vert[], unsigned int ind[])
-{
-	//Loop through the grid and creates a x and z position depending on a random function. Y position is depending in perlin noise
-	for (int y = 0; y < SIZE;y++)
-	{
-		float j = (float)y / SIZE;
-		for (int x = 0; x < SIZE; x++)
-		{
-			float i = (float)x / SIZE;
-			vert[(x + y * SIZE) * 3] = ((float)x + 0.25 +(float)rand() / (2 * RAND_MAX));
-			//vert[(x + y * SIZE) * 3 + 1] = 40.0f * (noise3(5.0f*i, 5.0f*j, 0.5)) + 1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
-			vert[(x + y * SIZE) * 3 + 1] = std::max(2.0f, 40.0f * abs(noise3(2.0f*i, 5.0f*j, 0.5)))+1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
-			vert[(x + y * SIZE) * 3 + 2] = ((float)y +0.25+(float)rand() / (2*RAND_MAX));
-		}
-	}
-	
-	//Create the triangles for each grid
-	for (int y = 0; y < SIZE-1; y++)
-	{
-		for (int x = 0; x < SIZE-1; x++)
-		{
-			ind[(x + y*(SIZE - 1)) * 6 + 0] = x + y * (SIZE);
-			ind[(x + y*(SIZE - 1)) * 6 + 1] = x + 1 + (y + 1) * (SIZE);
-			ind[(x + y*(SIZE - 1)) * 6 + 2] = x + 1+ y * (SIZE);
-
-			ind[(x + y * (SIZE - 1)) * 6 + 3] = x + y * (SIZE);
-			ind[(x + y * (SIZE - 1)) * 6 + 4] = x + (y+1) * (SIZE);
-			ind[(x + y * (SIZE - 1)) * 6 + 5] = x + 1 + (y+1) * (SIZE);
-			
-		}
-	}
-}
 
 void Ground::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 {
 	//Loop through the grid and creates a x and z position depending on a random function. Y position is depending in perlin noise
 	Vertex temp;
-	for (int y = 0; y < SIZE; y++)
+	for (int y = 0; y < VertexCount; y++)
 	{
-		float j = (float)y / SIZE;
-		for (int x = 0; x < SIZE; x++)
+		float j = (float)y / (VertexCount-1);
+		for (int x = 0; x < VertexCount; x++)
 		{
-			float i = (float)x / SIZE;
-			temp.Position.x = ((float)x + 0.25 + (float)rand() / (2 * RAND_MAX));
-			//vert[(x + y * SIZE) * 3 + 1] = 40.0f * (noise3(5.0f*i, 5.0f*j, 0.5)) + 1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
-			temp.Position.y = std::max(2.0f, 40.0f * abs(noise3(2.0f*i, 5.0f*j, 0.5))) + 1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
-			temp.Position.z = ((float)y + 0.25 + (float)rand() / (2 * RAND_MAX));
-			vert[x + y * SIZE] = temp;
+			float i = (float)x / (VertexCount-1);
+
+
+			temp.Position.x = i * GroundSize  -SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
+			temp.Position.y = 0.0f; //std::max(2.0f, 40.0f * abs(noise3(20.0f*i, 50.0f*j, 0.5))) + 1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
+			temp.Position.z = j * GroundSize -SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
+			vert[x + y * VertexCount] = temp;
 		}
 	}
 
 	//Create the triangles for each grid
-	for (int y = 0; y < SIZE - 1; y++)
+	for (int y = 0; y < VertexCount - 1; y++)
 	{
-		for (int x = 0; x < SIZE - 1; x++)
+		for (int x = 0; x < VertexCount - 1; x++)
 		{
-			ind[(x + y * (SIZE - 1)) * 6 + 0] = x + y * (SIZE);
-			ind[(x + y * (SIZE - 1)) * 6 + 1] = x + 1 + (y + 1) * (SIZE);
-			ind[(x + y * (SIZE - 1)) * 6 + 2] = x + 1 + y * (SIZE);
+			ind[(x + y * (VertexCount - 1)) * 6 + 0] = x + y * (VertexCount);
+			ind[(x + y * (VertexCount - 1)) * 6 + 1] = x + 1 + (y + 1) * (VertexCount);
+			ind[(x + y * (VertexCount - 1)) * 6 + 2] = x + 1 + y * (VertexCount);
 
-			ind[(x + y * (SIZE - 1)) * 6 + 3] = x + y * (SIZE);
-			ind[(x + y * (SIZE - 1)) * 6 + 4] = x + (y + 1) * (SIZE);
-			ind[(x + y * (SIZE - 1)) * 6 + 5] = x + 1 + (y + 1) * (SIZE);
+			ind[(x + y * (VertexCount - 1)) * 6 + 3] = x + y * (VertexCount);
+			ind[(x + y * (VertexCount - 1)) * 6 + 4] = x + (y + 1) * (VertexCount);
+			ind[(x + y * (VertexCount - 1)) * 6 + 5] = x + 1 + (y + 1) * (VertexCount);
 
 		}
 	}
@@ -139,4 +123,29 @@ void Ground::UpdateShader()
 {
 	glDeleteProgram(shader->ID);
 	shader = new Shader("Shaders/Ground/GroundV.glsl", "Shaders/Ground/GroundF.glsl", "Shaders/Ground/GroundG.glsl");
+}
+
+void Ground::SetGroundHeight(glm::vec2 Heights)
+{
+	GroundHeight.x += Heights.x;
+	GroundHeight.y += Heights.y;
+}
+void Ground::SetMountainNoise(glm::vec3 Noise)
+{
+	BigNoise.x += Noise.x;
+	BigNoise.y += Noise.y;
+	BigNoise.z += Noise.z;
+}
+void Ground::SetGroundNoise(glm::vec3 Noise)
+{
+	SmallNoise.x += Noise.x;
+	SmallNoise.y += Noise.y;
+	SmallNoise.z += Noise.z;
+}
+
+void Ground::SetSmallHeight(float Heights)
+{
+	GroundSmallHeight += Heights;
+	std::cout << GroundSmallHeight <<std::endl;
+
 }

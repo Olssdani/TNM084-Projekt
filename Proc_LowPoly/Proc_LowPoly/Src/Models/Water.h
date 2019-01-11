@@ -8,13 +8,13 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include "Utilities.h"
-#define SIZE 150
+
 
 
 class Water
 {
 public:
-	Water();
+	Water(unsigned int WaterSize, unsigned int VertexCount);
 	~Water();
 	void Render(glm::mat4 projection, glm::mat4 view);
 	void UpdateShader();
@@ -25,8 +25,12 @@ private:
 	Shader * shader;
 	unsigned int VBO, VAO, EBO;
 	float ypos;
+	unsigned int WaterSize;
+	unsigned int VertexCount;
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
 
 	void CreateMesh(float vert[], unsigned int ind[]);
-	void CreateMesh(std::vector<Vertex> &vert, unsigned int ind[]);
+	void CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
 };
 

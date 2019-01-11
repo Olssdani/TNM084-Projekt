@@ -17,6 +17,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void process_Ground(GLFWwindow *window, Ground &ground);
+void process_Water(GLFWwindow *window, Water &water);
+
 void updateTime();
 
 // settings
@@ -31,6 +34,7 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
+
 
 int main()
 {	
@@ -90,11 +94,8 @@ int main()
 	printf("Desktop size:    %d x %d pixels\n", mode->width, mode->height);
 
 	//Objects
-	Ground ground(150, 100);
-	Water water;
-	//Create a fern 
-	//L_System2D fern("X", "[-X]FFF-FF-F0", "F", 2, M_PI / 2.0f, 20.0f*D2R, 1.0f);
-	//fern.CreateSystem();
+	Ground ground(150, 50);
+	Water water(150,100);
 	Fern fern;
 
 
@@ -109,7 +110,21 @@ int main()
 		updateTime();
 		
 		//Get input
-		processInput(window);
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		{
+			process_Ground(window, ground);
+		}
+		else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		{
+			process_Water(window, water);
+		}
+		else
+		{
+			processInput(window);
+		}
+
+
+	
 		if (glfwGetKey(window, GLFW_KEY_SPACE)) {
 			ground.UpdateShader();
 			water.UpdateShader();
@@ -117,10 +132,10 @@ int main()
 			std::cout << "New Shader loaded" << std::endl;
 		}
 
-		if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-			water.WaterHeight(-0.1f);
-		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-			water.WaterHeight(0.1f);
+
+	
+		
+		
 		// render
 		// ------
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -144,6 +159,71 @@ int main()
 
 	glfwTerminate();
 	return 0;
+}
+
+void process_Ground(GLFWwindow *window, Ground &ground)
+{
+	
+	//Big Noise
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		ground.SetMountainNoise(glm::vec3(0.01, 0.0, 0.0));
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		ground.SetMountainNoise(glm::vec3(-0.01, 0.0, 0.0));
+	
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		ground.SetMountainNoise(glm::vec3(0.0, 0.01, 0.0));
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		ground.SetMountainNoise(glm::vec3(0.0, -0.01, 0.0));
+
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		ground.SetMountainNoise(glm::vec3(0.0, 0.0, 0.01));
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		ground.SetMountainNoise(glm::vec3(0.0, 0.0, -0.01));
+
+	//Small Noise
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+		ground.SetGroundNoise(glm::vec3(0.01, 0.0, 0.0));
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+		ground.SetGroundNoise(glm::vec3(-0.01, 0.0, 0.0));
+
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+		ground.SetGroundNoise(glm::vec3(0.0, 0.01, 0.0));
+	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+		ground.SetGroundNoise(glm::vec3(0.0, -0.01, 0.0));
+
+	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
+		ground.SetGroundNoise(glm::vec3(0.0, 0.0, 0.01));
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+		ground.SetGroundNoise(glm::vec3(0.0, 0.0, -0.01));
+		//Height
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		ground.SetGroundHeight(glm::vec2(0.2, 0.0));
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		ground.SetGroundHeight(glm::vec2(-0.2, 0.0));
+	
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		ground.SetGroundHeight(glm::vec2(0.0, 0.2));
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		ground.SetGroundHeight(glm::vec2(0.0, -0.2));
+		
+
+	//Small height
+	if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
+		ground.SetSmallHeight(0.2f);
+	if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
+		ground.SetSmallHeight(-0.2f);
+	
+}
+
+
+void process_Water(GLFWwindow *window, Water &water)
+{
+
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		water.WaterHeight(0.1f);
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		water.WaterHeight(-0.1f);
+
 }
 
 
@@ -181,6 +261,8 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
+
+
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
