@@ -23,13 +23,12 @@ private:
 	//Variables
 	Shader *shader;
 	unsigned int VBO, VAO, EBO;
-
+	std::vector<Vertex> vertices;
 
 	//Functions
 	//Creates the floor
 	void CreateGround(float vert[], unsigned int ind[]);
-
-	void CreateGround(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
+	void CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
 	
 };
 

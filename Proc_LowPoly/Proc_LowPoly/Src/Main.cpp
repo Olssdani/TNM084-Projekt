@@ -10,6 +10,7 @@
 #include "Models/Water.h"
 #include "L-System\L_System2D.h"
 #include "Models\Fern.h"
+#include "Utilities.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -32,7 +33,9 @@ float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
 int main()
-{
+{	
+	//Set random time
+	srand(time(NULL));
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
@@ -87,7 +90,7 @@ int main()
 	printf("Desktop size:    %d x %d pixels\n", mode->width, mode->height);
 
 	//Objects
-	Ground ground;
+	Ground ground(150, 100);
 	Water water;
 	//Create a fern 
 	//L_System2D fern("X", "[-X]FFF-FF-F0", "F", 2, M_PI / 2.0f, 20.0f*D2R, 1.0f);

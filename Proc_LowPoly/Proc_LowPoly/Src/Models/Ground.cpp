@@ -3,18 +3,15 @@
 
 
 
-Ground::Ground()
+Ground::Ground(int GroundSize, int VertexCount)
 {
 	//Shader
 	shader = new Shader("Shaders/Ground/GroundV.glsl", "Shaders/Ground/GroundF.glsl", "Shaders/Ground/GroundG.glsl");
-
-	//float vertices[3 * SIZE*SIZE]{ 0.0f };
-	std::vector<Vertex> vertices;
+	
+	//Vertices and indices
 	vertices.resize(SIZE*SIZE);
-	std::vector<unsigned int> indices;
 	indices.resize((SIZE - 1)*(SIZE - 1) * 3 * 2);
-	//unsigned int indices[(SIZE-1)*(SIZE-1)*3*2]{0.0f};
-	CreateGround(vertices, indices);
+	CreateMesh(vertices, indices);
 
 
 	// Create the buffers
@@ -104,7 +101,7 @@ void Ground::CreateGround(float vert[], unsigned int ind[])
 	}
 }
 
-void Ground::CreateGround(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
+void Ground::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 {
 	//Loop through the grid and creates a x and z position depending on a random function. Y position is depending in perlin noise
 	Vertex temp;
