@@ -231,8 +231,10 @@ void Fern::Render(glm::mat4 projection, glm::mat4 view)
 		float angle = (float)i*90*D2R;
 		glm::mat4 translate = glm::translate(glm::vec3(0.5, 0.0, 0.0));
 		glm::mat4 model = glm::mat4(1.0f);
+		model = model * glm::scale(glm::vec3(1.0, 1.0, 1.0));
 		model = glm::rotate(model, angle, glm::vec3(0.0, 1.0, 0.0) );
 		model = model *translate;
+		
 		shader->setMat4("model", model);
 
 		//Bind the VAO and draw the vertex

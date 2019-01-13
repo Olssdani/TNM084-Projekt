@@ -17,7 +17,7 @@ void main()
 
 
 
-
+	
 
 	//Fake flat shading without knowing the normals. Took it from https://www.opengl.org/discussion_boards/showthread.php/190731-help-with-flat-shading
 	/*vec3 ec_normal = normalize(cross(dFdx(posG), dFdy(posG)));

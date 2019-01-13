@@ -25,9 +25,11 @@ public:
 	void SetGroundNoise(glm::vec3 Noise);
 	void SetSmallHeight(float Heights);
 
+	void RenderHeight(unsigned int &SCR_WIDTH, unsigned int &SCR_HEIGHT);
+
 private:
 	//Variables
-	Shader *shader;
+	Shader *shader, *shaderH;
 	unsigned int VBO, VAO, EBO;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
