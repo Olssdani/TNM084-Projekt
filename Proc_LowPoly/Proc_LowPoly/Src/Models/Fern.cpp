@@ -90,7 +90,7 @@ void Fern::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 		}
 		else if (seg.Type == RegularL)
 		{
-			width = 1.0;
+			width = 0.7;
 			height = seg.end.y;
 			depth = seg.end.x;
 			lower = down;

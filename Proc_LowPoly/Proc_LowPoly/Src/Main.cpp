@@ -56,7 +56,7 @@ int main()
 	GLFWmonitor* primary = glfwGetPrimaryMonitor();
 	const GLFWvidmode * mode = glfwGetVideoMode(primary);
 	GLFWwindow* window;
-	if (mode == NULL)
+	if (mode != NULL)
 	{
 		window = glfwCreateWindow(mode->width, mode->height, "Low Poly World", primary, NULL);
 	}
