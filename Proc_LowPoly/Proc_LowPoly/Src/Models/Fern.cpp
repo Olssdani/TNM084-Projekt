@@ -4,39 +4,44 @@
 
 Fern::Fern()
 {
-	shader = new Shader("Shaders/Fern/FernV.glsl", "Shaders/Fern/FernF.glsl", "Shaders/Fern/FernG.glsl");
-	LSystem = new L_System2D("X", "[-X]FFF-FF-F0", "F", 2, M_PI / 2.0f- 20.0f*D2R, 20.0f*D2R, 1.0f);
-	Structure = LSystem->CreateSystem();
-	
-	//vertices.resize((Structure.size()+2)*3+1);
-	//indices.resize(Structure.size()*4*3);
-	vertices.resize((Structure.size()*4+4)*3);
-	indices.resize(Structure.size()*4*3*2);
-	CreateMesh(vertices, indices);
-
 	// Create the buffers
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	glGenVertexArrays(4, VAO);
+	glGenBuffers(4, VBO);
+	glGenBuffers(4, EBO);
+	shader = new Shader("Shaders/Fern/FernV.glsl", "Shaders/Fern/FernF.glsl", "Shaders/Fern/FernG.glsl");
+	//Create the different leafs
+	for (int i = 0; i < 4; i++)
+	{	
+		LSystem = new L_System2D("X", "[-X]FFF-FF-F0", "F", 2, M_PI / 2.0f- 10*D2R- 30.0*((float)rand() / RAND_MAX)*D2R, 30.0f*D2R, 1.0f);
+		Structure = LSystem->CreateSystem();
+		vertices.clear();
+		indices.clear();
+		vertices.resize((Structure.size() * 4 + 4) * 3);
+		indices.resize(Structure.size() * 4 * 3 * 2);
+		CreateMesh(vertices, indices);
 
-	//Bind the vertex buffer object
-	glBindVertexArray(VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+		//Bind the vertex buffer object
+		glBindVertexArray(VAO[i]);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
+		//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[i]);
+		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
-	//Unbind the VAO
-	glBindVertexArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		//Unbind the VAO
+		glBindVertexArray(0);
+	}
+	
 
 }
 
@@ -221,9 +226,9 @@ void Fern::Render(glm::mat4 projection, glm::mat4 view)
 	shader->setMat4("projection", projection);
 	shader->setMat4("view", view);
 
-	for (int i = 0; i < 360; i = i + 90)
+	for (int i = 0; i < 4; i++)
 	{
-		float angle = (float)i*D2R;
+		float angle = (float)i*90*D2R;
 		glm::mat4 translate = glm::translate(glm::vec3(0.5, 0.0, 0.0));
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::rotate(model, angle, glm::vec3(0.0, 1.0, 0.0) );
@@ -231,7 +236,7 @@ void Fern::Render(glm::mat4 projection, glm::mat4 view)
 		shader->setMat4("model", model);
 
 		//Bind the VAO and draw the vertex
-		glBindVertexArray(VAO);
+		glBindVertexArray(VAO[i]);
 		//glDrawArrays(GL_TRIANGLES, 0, 2*SIZE*SIZE);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	}
@@ -241,9 +246,9 @@ void Fern::Render(glm::mat4 projection, glm::mat4 view)
 Fern::~Fern()
 {
 	delete shader;
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(4, VAO);
+	glDeleteBuffers(4, VBO);
+	glDeleteBuffers(4, EBO);
 }
 
 

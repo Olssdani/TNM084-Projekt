@@ -81,7 +81,7 @@ std::string L_System2D::CreatePoints(std::string rules, Point start, float Angle
 	while (rules.length() > 0)
 	{
 
-		float alpha = RuleAngle- 10.0f * D2R + 20.0f * ((float)rand() / RAND_MAX)*D2R;
+		float alpha = RuleAngle- 20.0f * D2R + 40.0f * ((float)rand() / RAND_MAX)*D2R;
 		//Reset end point
 		End.x = start.x;
 		End.y = start.y;
