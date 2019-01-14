@@ -11,3 +11,24 @@
 #define D2R (M_PI*2)/360.0  /* Degree to radians */
 #define R2D 360.0/(M_PI*2)  /* Radians to Degree */
 struct Vertex { glm::vec3 Position; };
+enum Type { StartL, EndL, BranchL, RegularL };
+struct Point
+{
+	float x;
+	float y;
+};
+
+struct Segment
+{
+	Point start;
+	Point end;
+	int Type;
+};
+
+struct Segment3D
+{
+	glm::vec3 Start;
+	glm::vec3 End;
+	Type type;
+
+};

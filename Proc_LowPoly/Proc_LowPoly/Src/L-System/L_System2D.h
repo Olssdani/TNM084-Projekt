@@ -6,19 +6,7 @@
 #include "Utilities.h"
 
 
-enum Type {StartL, EndL, BranchL, RegularL };
 
-struct Point
-{
-	float x;
-	float y;
-};
-struct Segment
-{
-	Point start;
-	Point end;
-	int Type;
-};
 
 
 class L_System2D
