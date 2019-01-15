@@ -12,6 +12,7 @@
 #include "Models\Fern.h"
 #include "Utilities.h"
 #include "L-System\L_System3D.h"
+#include "Models\Tree.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -98,8 +99,7 @@ int main()
 	Ground ground(150, 50);
 	Water water(150,100);
 	Fern fern;
-	L_System3D L("X", "FFF[+{&FFX0]FFF0", "FF", 2, glm::vec3(0.0, 1.0, 0.0), 45, 1.0f);
-	L.CreateSystem();
+	Tree tree(8, 1.0);
 
 
 
@@ -149,7 +149,8 @@ int main()
 		glm::mat4 view = camera.View();
 		ground.Render(projection, view);
 		water.Render(projection, view);
-		fern.Render(projection, view);
+		//fern.Render(projection, view);
+		tree.Render(projection, view);
 
 		//std::cout << SCR_HEIGHT << " " << SCR_WIDTH << std::endl;
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

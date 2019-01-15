@@ -13,6 +13,7 @@ L_System3D::L_System3D(std::string _Axiom, std::string _RuleX, std::string _Rule
 	MaxDepth = _MaxDepth;
 	StartDirection = _StartDirection;
 	RuleAngle = _RuleAngle;
+	orto = glm::vec3(1.0, 0.0, 0.0);
 }
 
 
@@ -92,26 +93,30 @@ std::string L_System3D::CreateRules(std::string state, int depth)
 	return Result;
 }
 
-void L_System3D::CreateSystem() //std::list<Segment>
+std::list<Segment3D> L_System3D::CreateSystem() //std::list<Segment>
 {
 	Rules = CreateRules(Axiom, 0);
 	std::cout << Rules << std::endl;
-	CreatePoints(Rules, StartPosition, StartDirection, StartLength);
+	CreatePoints(Rules, StartPosition, StartDirection, orto, StartLength);
+
 
 	for each (Segment3D seg in Rsegments)
 	{
-		std::cout <<"Start: " << seg.Start.x   << " " << seg.Start.y << " " << seg.Start.z  << " End: " <<seg.End.x << " " << seg.End.y << " " << seg.End.z<<  "type: " << seg.type << std::endl;
+		std::cout <<"Orto: " << seg.Direction.x   << " " << seg.Direction.y << " " << seg.Direction.z  <<  std::endl;
 	}
-//	return Rsegments;
+	return Rsegments;
 }
 
-std::string L_System3D::CreatePoints(std::string rules, glm::vec3 start, glm::vec3 Direction, float Length)
+std::string L_System3D::CreatePoints(std::string rules, glm::vec3 start, glm::vec3 Direction, glm::vec3 OrthoVec, float Length)
 {
 	glm::vec3 End;
 	Segment3D temp;
+	bool first = true;
 	//Loop until no more rules
 	while (rules.length() > 0)
 	{
+		Direction = glm::normalize(Direction);
+		OrthoVec = glm::normalize(OrthoVec);
 		//Reset end point
 		End.x = start.x;
 		End.y = start.y;
@@ -126,56 +131,81 @@ std::string L_System3D::CreatePoints(std::string rules, glm::vec3 start, glm::ve
 		}
 		else if (StateChar == "0")
 		{
+			//Set last segment to a end segment
 			Rsegments.back().type = EndL;
 		}
 		else if (StateChar == "F")
 		{
-			//model = glm::rotate(model, angle, glm::vec3(0.0, 1.0, 0.0));
+			//Go forward
 			End = start+Length*Direction;
+			if(first)
+			{
+				temp.type = StartL;
+				first = false;
+			}
+			else {
+				temp.type = RegularL;
+			}
 			
-			temp.type = RegularL;
 			temp.Start = start;
 			temp.End = End;
+			temp.Direction = Direction;
+			temp.Orto = OrthoVec;
 			Rsegments.push_back(temp);
 			start = End;
 		}
 		else if (StateChar == "[")
 		{
-			rules = CreatePoints(rules, start, Direction, Length);
+			//OPen new branch
+			rules = CreatePoints(rules, start, Direction, OrthoVec, Length);
 		}
 		else if (StateChar == "]")
 		{
+			//Close latest branch
 			return rules;
 		}
 		else if (StateChar == "-")
 		{
+			//Rotate right on Y axis
 			Direction = glm::rotateY(Direction, -RuleAngle);
+			OrthoVec = glm::rotateY(OrthoVec, -RuleAngle);
 		}
 		else if (StateChar == "+")
 		{
+			//Rotate left on Y axis
 			Direction = glm::rotateY(Direction, RuleAngle);
+			OrthoVec = glm::rotateY(OrthoVec, RuleAngle);
 		}
 		else if (StateChar == "{")
 		{
+			//Rotate left on X axis
 			Direction = glm::rotateX(Direction, RuleAngle);
+			OrthoVec = glm::rotateX(OrthoVec, RuleAngle);
 		}
 		else if (StateChar == "}")
 		{
+			//Rotate right on X axis
 			Direction = glm::rotateX(Direction, -RuleAngle);
+			OrthoVec = glm::rotateX(OrthoVec, -RuleAngle);
 		}
 		else if (StateChar == "&")
 		{
+			//Rotate right on > axis
 			Direction = glm::rotateZ(Direction, -RuleAngle);
+			OrthoVec = glm::rotateZ(OrthoVec, -RuleAngle);
 		}
 		else if (StateChar == "^")
 		{
+			//Rotate left on Z axis
 			Direction = glm::rotateZ(Direction, RuleAngle);
+			OrthoVec = glm::rotateZ(OrthoVec, RuleAngle);
 		}
 		else if (StateChar == "|")
 		{
-			
+			//For now do nothing, should rotate 180degree's and go backward
 		}
 
 	}
 	return rules;
 }
+
