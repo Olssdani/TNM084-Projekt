@@ -6,7 +6,7 @@
 #include <stdlib.h> 
 #include <vector>
 #include "Utilities.h"
-//Dies when set to 200, need do figure that shit out
+
 #define SIZE 150
 
 class Ground
