@@ -5,6 +5,7 @@
 #include <vector>
 #include "shader.h"
 #include <GLFW/glfw3.h>
+#include "Stegu/TriangleSoup.h"
 class Tree
 {
 public:
@@ -23,6 +24,8 @@ private:
 	std::vector<unsigned int> indices;
 	std::vector<Vertex> vertices;
 	std::list<Segment3D> Structure;
+	TriangleSoup sphere;
 	void CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
+	std::list<Segment3D> ends;
 };
 

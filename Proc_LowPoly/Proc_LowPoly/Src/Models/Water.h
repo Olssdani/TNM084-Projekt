@@ -30,7 +30,6 @@ private:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	void CreateMesh(float vert[], unsigned int ind[]);
 	void CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
 };
 

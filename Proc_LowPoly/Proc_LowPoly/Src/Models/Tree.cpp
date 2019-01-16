@@ -14,12 +14,21 @@ Tree::Tree(int _Edges, float _Thickness)
 	{
 		Edges = _Edges;
 	}
-	L_System3D L("X", "FFF[+{&FFX0]FFF0", "FF", 2, glm::vec3(0.0, 1.0, 0.0), 45, 1.0f);
+	L_System3D L("X", "FFF[+{&FFF0]FF[&\X]FFF0", "FF", 2, glm::vec3(0.0, 1.0, 0.0), 45, 1.0f);
 	Structure = L.CreateSystem();
 	vertices.resize((Structure.size()*2)*Edges);
-	indices.resize((Structure.size()+2)*(Edges*2*3));
+	indices.resize((Structure.size()+10)*(Edges*2*3));
 	CreateMesh(vertices, indices);
 
+	for each (Segment3D seg in Structure)
+	{
+		if (seg.type == EndL)
+		{
+			ends.push_back(seg);
+		}
+	}
+
+	sphere.createSphere(4, 4);
 	// Create the buffers
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -64,11 +73,25 @@ void Tree::Render(glm::mat4 projection, glm::mat4 view)
 	glm::mat4 model = glm::translate(glm::vec3(0.0, 0.0, 0.0));
 	shader->setMat4("model", model);
 	shader->setFloat("Time", glfwGetTime());
+	shader->setVec3("color", glm::vec3(0.6, 0.28, 0.08));
+	shader->setBool("Stem", true);
 
 	//Bind the VAO and draw the vertex
 	glBindVertexArray(VAO);
 	//glDrawArrays(GL_TRIANGLES, 0, 2*SIZE*SIZE);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+	
+	for each (Segment3D pos in ends)
+	{
+		shader->setVec3("color", glm::vec3(0.0, 0.5, 0.0));
+		model = glm::translate(pos.End)*glm::scale(glm::vec3(pos.width));
+		shader->setMat4("model", model);
+
+		shader->setBool("Stem", false);
+		sphere.render();
+	}
+
 }
 
 void Tree:: UpdateShader()
@@ -85,31 +108,33 @@ void Tree::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 	{
 		Vertex temp;
 		//Make a vertex displace in the perpendicular to the direction
-		glm::vec4 vertex = glm::vec4(seg.Start, 1.0) * glm::translate(seg.Orto*Thickness);
 		for (int i = 0; i < Edges; i++)
 		{
-			glm::vec3 rot = vertex * glm::rotate(glm::mat4(1.0f), (float)(i*degree*D2R),seg.Direction);
+			//Create an offset from origo on how much displacement that will be from the point.
+			glm::vec3 t = glm::rotate(glm::mat4(1.0f), (float)(i*degree*D2R), glm::normalize(seg.Direction))*glm::vec4(seg.Orto,1.0)*seg.width;
+			// Add the offset to the point
+			glm::vec3 rot = seg.Start+t;
 			temp = Vertex{ rot };
 			vert[counter] = temp;
 			counter++;
 		}
-
-		if (seg.type == EndL)
+		//If it is the last point on a branch
+		if (seg.type == EndL || seg.type == BranchL)
 		{
-			glm::vec4 vertex = glm::vec4(seg.End, 1.0) * glm::translate(seg.Orto*Thickness);
 			for (int i = 0; i < Edges; i++)
 			{
-				glm::vec3 rot = vertex * glm::rotate(glm::mat4(1.0f), (float)(i*degree*D2R), seg.Direction);
+				glm::vec3 t = glm::rotate(glm::mat4(1.0f), (float)(i*degree*D2R), glm::normalize(seg.Direction))*glm::vec4(seg.Orto, 1.0)*seg.width;
+				glm::vec3 rot = seg.End + t;
 				temp = Vertex{ rot };
 				vert[counter] = temp;
 				counter++;
 			}
 		}
 	}
-	for each (Vertex var in vert)
+	/*for each (Vertex var in vert)
 	{
-		std::cout << var.Position.x << " " << var.Position.y << " " << var.Position.z <<std::endl;
-	}
+		std::cout << var.Position.x << "\t\t " << var.Position.y << "\t\t " << var.Position.z <<std::endl;
+	}*/
 
 	counter = 0;
 	for each (Segment3D seg in Structure)
@@ -139,20 +164,15 @@ void Tree::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 				ind[SegmentLevel + i * 6 + 4] = counter * Edges + i + Edges + 1;
 				ind[SegmentLevel + i * 6 + 5] = counter * Edges + i + Edges;
 			}
-
-			
 		}
 		//Increment counter depending on the type
-		if (seg.type == EndL)
+		if (seg.type == EndL || seg.type == BranchL)
 		{
 			counter = counter + 2;
-
 		}
 		else {
 			counter++;
 		}
-		
-
 	}
 
 }

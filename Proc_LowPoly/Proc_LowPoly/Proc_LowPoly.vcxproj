@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Include\Stegu\TriangleSoup.cpp" />
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\glad.c" />
     <ClCompile Include="Src\L-System\L_System2D.cpp" />
@@ -32,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\glad\glad.h" />
+    <ClInclude Include="Include\Stegu\TriangleSoup.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\L-System\L_System2D.h" />
     <ClInclude Include="Src\L-System\L_System3D.h" />

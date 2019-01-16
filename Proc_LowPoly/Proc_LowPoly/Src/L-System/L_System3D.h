@@ -26,7 +26,7 @@ private:
 	std::list<Segment3D> Rsegments;
 	glm::vec3 orto;
 
-	std::string CreatePoints(std::string rules, glm::vec3 start, glm::vec3 Direction, glm::vec3 OrthoVec, float Length);
+	std::string CreatePoints(std::string rules, glm::vec3 start, glm::vec3 Direction, glm::vec3 OrthoVec, float Length, float Width);
 	std::string CreateRules(std::string state, int depth);
 };
 

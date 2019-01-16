@@ -25,8 +25,8 @@ void process_Water(GLFWwindow *window, Water &water);
 void updateTime();
 
 // settings
-unsigned int SCR_WIDTH = 800;
-unsigned int SCR_HEIGHT = 600;
+unsigned int SCR_WIDTH = 1028;
+unsigned int SCR_HEIGHT = 768;
 Camera camera(glm::vec3(0.0f, 50.0f, 10.0f));
 
 float lastX = SCR_WIDTH / 2.0f;
@@ -133,6 +133,7 @@ int main()
 			ground.UpdateShader();
 			water.UpdateShader();
 			fern.UpdateShader();
+			tree.UpdateShader();
 			std::cout << "New Shader loaded" << std::endl;
 		}
 		//ground.RenderHeight(SCR_WIDTH, SCR_HEIGHT);

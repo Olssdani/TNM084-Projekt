@@ -97,17 +97,17 @@ std::list<Segment3D> L_System3D::CreateSystem() //std::list<Segment>
 {
 	Rules = CreateRules(Axiom, 0);
 	std::cout << Rules << std::endl;
-	CreatePoints(Rules, StartPosition, StartDirection, orto, StartLength);
+	CreatePoints(Rules, StartPosition, StartDirection, orto, StartLength, 1.0);
 
 
-	for each (Segment3D seg in Rsegments)
-	{
-		std::cout <<"Orto: " << seg.Direction.x   << " " << seg.Direction.y << " " << seg.Direction.z  <<  std::endl;
-	}
+	//for each (Segment3D seg in Rsegments)
+	//{
+	//	std::cout <<"Start: " << seg.Start.x   << " " << seg.Start.y << " " << seg.Start.z  << " ENd " << seg.End.x << " " << seg.End.y << " " << seg.End.z << " Type " << seg.type <<    std::endl;
+	//}
 	return Rsegments;
 }
 
-std::string L_System3D::CreatePoints(std::string rules, glm::vec3 start, glm::vec3 Direction, glm::vec3 OrthoVec, float Length)
+std::string L_System3D::CreatePoints(std::string rules, glm::vec3 start, glm::vec3 Direction, glm::vec3 OrthoVec, float Length, float Width)
 {
 	glm::vec3 End;
 	Segment3D temp;
@@ -151,13 +151,15 @@ std::string L_System3D::CreatePoints(std::string rules, glm::vec3 start, glm::ve
 			temp.End = End;
 			temp.Direction = Direction;
 			temp.Orto = OrthoVec;
+			temp.width = Width;
 			Rsegments.push_back(temp);
 			start = End;
 		}
 		else if (StateChar == "[")
 		{
 			//OPen new branch
-			rules = CreatePoints(rules, start, Direction, OrthoVec, Length);
+			Rsegments.back().type = BranchL;
+			rules = CreatePoints(rules, start, Direction, OrthoVec, Length, Width*0.5 );
 		}
 		else if (StateChar == "]")
 		{

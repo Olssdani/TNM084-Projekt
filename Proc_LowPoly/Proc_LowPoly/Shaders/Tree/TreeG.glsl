@@ -2,6 +2,7 @@
 layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;
 in vec3 pos[3];
+in vec3 ourColor[3];
 out vec3 ourColorG;
 out vec3 posG;
 out vec3 NormalG;
@@ -18,6 +19,7 @@ void main()
 	for(int i = 0; i < gl_in.length(); i++)
 	{
 	 	gl_Position = gl_in[i].gl_Position;
+	 	ourColorG = ourColor[i];
 	 	NormalG = Normal;
 	 	posG = pos[i];
 	 	EmitVertex();

@@ -61,10 +61,12 @@ void Water::Render(glm::mat4 projection, glm::mat4 view)
 	shader->setMat4("model", model);
 	shader->setFloat("Time", glfwGetTime());
 
+
 	//Bind the VAO and draw the vertex
 	glBindVertexArray(VAO);
 	//glDrawArrays(GL_TRIANGLES, 0, 2*SIZE*SIZE);
 	glDrawElements(GL_TRIANGLES,indices.size(), GL_UNSIGNED_INT, 0);
+
 
 }
 void Water::WaterHeight(float a)

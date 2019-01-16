@@ -1,5 +1,5 @@
 function [Result] = Lsystem3D(string, depth, maxDepth)
-    RuleX = 'FFF[+{&FFX0]FFF0';
+    RuleX = 'FFF[+{&F0]FF[&\X]F0';
     RuleF = 'FF';
     Result = '';
     if(depth == maxDepth) 
