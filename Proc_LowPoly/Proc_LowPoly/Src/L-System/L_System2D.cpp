@@ -4,6 +4,8 @@
 
 L_System2D::L_System2D(std::string _Axiom, std::string _RuleX, std::string _RuleF, int _MaxDepth, float _StartAngle, float _RuleAngle, float _Length)
 {
+	
+
 	Axiom = _Axiom;
 	RuleX = _RuleX;
 	RuleF = _RuleF;
@@ -78,6 +80,8 @@ std::string L_System2D::CreatePoints(std::string rules, Point start, float Angle
 	//Loop until no more rules
 	while (rules.length() > 0)
 	{
+
+		float alpha = RuleAngle- 20.0f * D2R + 40.0f * ((float)rand() / RAND_MAX)*D2R;
 		//Reset end point
 		End.x = start.x;
 		End.y = start.y;
@@ -115,11 +119,11 @@ std::string L_System2D::CreatePoints(std::string rules, Point start, float Angle
 		}
 		else if (StateChar == "-")
 		{
-			Angle = Angle - RuleAngle;
+			Angle = Angle - alpha;
 		}
 		else if (StateChar == "+")
 		{
-			Angle = Angle + RuleAngle;
+			Angle = Angle + alpha;
 		}
 
 	}

@@ -19,21 +19,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Include\Stegu\TriangleSoup.cpp" />
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\glad.c" />
     <ClCompile Include="Src\L-System\L_System2D.cpp" />
+    <ClCompile Include="Src\L-System\L_System3D.cpp" />
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Models\Fern.cpp" />
     <ClCompile Include="Src\Models\Ground.cpp" />
+    <ClCompile Include="Src\Models\Tree.cpp" />
     <ClCompile Include="Src\Models\Water.cpp" />
     <ClCompile Include="Src\noise1234.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\glad\glad.h" />
+    <ClInclude Include="Include\Stegu\TriangleSoup.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\L-System\L_System2D.h" />
+    <ClInclude Include="Src\L-System\L_System3D.h" />
     <ClInclude Include="Src\Models\Fern.h" />
     <ClInclude Include="Src\Models\Ground.h" />
+    <ClInclude Include="Src\Models\Tree.h" />
     <ClInclude Include="Src\Models\Water.h" />
     <ClInclude Include="Src\shader.h" />
     <ClInclude Include="Src\Utilities.h" />

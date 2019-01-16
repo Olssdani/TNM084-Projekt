@@ -3,23 +3,10 @@
 #include <iostream>
 #include <list>
 #include <cmath>
-#define M_PI 3.14159265358979323846  /* pi */
-#define D2R (M_PI*2)/360.0  /* Degree to radians */
-#define R2D 360.0/(M_PI*2)  /* Radians to Degree */
+#include "Utilities.h"
 
-enum Type {StartL, EndL, BranchL, RegularL };
 
-struct Point
-{
-	float x;
-	float y;
-};
-struct Segment
-{
-	Point start;
-	Point end;
-	int Type;
-};
+
 
 
 class L_System2D

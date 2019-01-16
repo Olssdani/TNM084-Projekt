@@ -1,23 +1,12 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;   // the position variable has attribute position 0
   
-out vec3 pos;
-uniform mat4 view;
-uniform mat4 projection;
-uniform mat4 model;
-uniform float Time;
-//
-// Description : Array and textureless GLSL 2D/3D/4D simplex 
-//               noise functions.
-//      Author : Ian McEwan, Ashima Arts.
-//  Maintainer : stegu
-//     Lastmod : 20110822 (ijm)
-//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.
-//               Distributed under the MIT License. See LICENSE file.
-//               https://github.com/ashima/webgl-noise
-//               https://github.com/stegu/webgl-noise
-// 
-
+out vec3 ourColor; // output a color to the fragment shader
+uniform vec2 GroundHeight;
+uniform vec3 BigNoise;
+uniform vec3 SmallNoise;
+uniform float GroundSize;
+uniform float SmallHeight;
 vec3 mod289(vec3 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
@@ -110,12 +99,20 @@ float snoise(vec3 v)
                                 dot(p2,x2), dot(p3,x3) ) );
   }
 
+
+
+
 void main()
 {
-	vec3 spos = aPos;
-	spos.y = spos.y+0.1*snoise(vec3(0.1*spos.x, 0.1*spos.z, 0.4*Time));
-	spos.x = spos.x +0.2*snoise(vec3(0.2*spos.x, 0.1*spos.z, 0.4*Time));
-  spos.z = spos.z +0.2*snoise(vec3(0.2*spos.x, 0.1*spos.z, 0.4*Time));
-    gl_Position = projection*view*model*vec4(spos, 1.0);
-	pos = vec4(spos, 1.0).xyz; 
+    vec3 pos =aPos;
+    float i = pos.x/GroundSize; 
+    float j =pos.z/GroundSize; 
+    pos.y = pos.y +max(GroundHeight.y,GroundHeight.x * ( snoise(vec3(BigNoise.x*i, BigNoise.y*j, BigNoise.z)))) + SmallHeight*snoise(vec3(SmallNoise.x*i, SmallNoise.y*j, SmallNoise.z));
+
+
+
+    gl_Position =vec4(pos, 1.0);
+    float temp = pos.y;
+    ourColor = vec3(temp,temp,temp);
+ 
 }  

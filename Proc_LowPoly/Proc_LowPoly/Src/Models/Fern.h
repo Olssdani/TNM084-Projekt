@@ -18,7 +18,7 @@ private:
 	L_System2D *LSystem;
 	//Variables
 	Shader * shader;
-	unsigned int VBO, VAO, EBO;
+	GLuint VBO[4], VAO[4], EBO[4];
 	std::vector<unsigned int> indices;
 	std::vector<Vertex> vertices;
 	std::list<Segment> Structure;
