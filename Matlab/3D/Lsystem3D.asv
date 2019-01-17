@@ -1,7 +1,7 @@
 function [Result] = Lsystem3D(string, depth, maxDepth)
-    Rule1 = 'FFF[+{&F0]FF[&{X]F0';
-    Rule2 = '-&}FFX0'
-    Rule3 = 'FF[+}XF0]'
+    Rule1 = 'FFF[+{&F0]FF[&\X]F0';
+    Rule2 =
+    Rule3 =
     RuleF = 'FF';
     Result = '';
     if(depth == maxDepth) 
@@ -24,7 +24,7 @@ function [Result] = Lsystem3D(string, depth, maxDepth)
             elseif(r<0.67)
                 RuleX = Rule2;
             else
-                RuleX = Rule3;
+                
             end
             Result =strcat(Result,Lsystem3D(RuleX, depth, maxDepth));
         elseif(char == 'F')

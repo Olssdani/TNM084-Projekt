@@ -12,7 +12,9 @@ public:
 	~Fern();
 	void Render(glm::mat4 projection, glm::mat4 view);
 	void UpdateShader();
-	
+	void SetTranslation(glm::vec3 t);
+	void SetRotation(glm::vec3 r, float angle);
+	void SetScale(glm::vec3 s);
 
 private:
 	L_System2D *LSystem;
@@ -22,6 +24,8 @@ private:
 	std::vector<unsigned int> indices;
 	std::vector<Vertex> vertices;
 	std::list<Segment> Structure;
+	glm::mat4 S, T, R;
+	int IndicesSize;
 	void CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
 
 };

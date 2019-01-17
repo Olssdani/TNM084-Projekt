@@ -10,11 +10,11 @@ Ground::Ground(int _GroundSize, int _VertexCount)
 	shaderH = new Shader("Shaders/Ground/HeightV.glsl", "Shaders/Ground/HeightF.glsl");
 	
 	//Set the noise
-	GroundHeight = glm::vec2(10.0f, -10.0f);
+	GroundHeight = glm::vec2(10.0f, 0.0f);
 	BigNoise = glm::vec3(0.0f, 0.0f, 0.0f);
 	SmallNoise = glm::vec3(0.0f,0.0f,0.0f);
 	GroundSmallHeight = 1.0f;
-
+	max = GroundHeight.x;
 	//Size of grid and number of squares
 	VertexCount = _VertexCount;
 	GroundSize = _GroundSize;
@@ -56,6 +56,8 @@ Ground::~Ground()
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
+	indices.clear();
+	vertices.clear();
 }
 
 //Render
@@ -65,6 +67,7 @@ void Ground::Render(glm::mat4 projection, glm::mat4 view)
 	shader->use();
 
 
+	
 	//Send variables to shader
 	shader->setMat4("projection", projection);
 	shader->setMat4("view", view);
@@ -96,10 +99,22 @@ void Ground::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &in
 		{
 			float i = (float)x / (VertexCount-1);
 
-
-			temp.Position.x = i * GroundSize  -SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
+			if (x == 0 || x == VertexCount - 1)
+			{
+				temp.Position.x = i * GroundSize;
+			}
+			else {
+				temp.Position.x = i * GroundSize - SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
+			}
 			temp.Position.y = 0.0f; //std::max(2.0f, 40.0f * abs(noise3(20.0f*i, 50.0f*j, 0.5))) + 1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
-			temp.Position.z = j * GroundSize -SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
+			if (y == 0 || y == VertexCount - 1)
+			{
+				temp.Position.z = j * GroundSize;
+			}
+			else {
+				temp.Position.z = j * GroundSize - SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
+			}
+			//temp.Position.z = j * GroundSize -SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
 			vert[x + y * VertexCount] = temp;
 		}
 	}
@@ -130,6 +145,7 @@ void Ground::SetGroundHeight(glm::vec2 Heights)
 {
 	GroundHeight.x += Heights.x;
 	GroundHeight.y += Heights.y;
+	max = GroundHeight.x;
 }
 void Ground::SetMountainNoise(glm::vec3 Noise)
 {
@@ -181,28 +197,37 @@ void Ground::RenderHeight(unsigned int &SCR_WIDTH,unsigned int &SCR_HEIGHT)
 	shaderH->use();
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
+	glm::mat4 view = glm::lookAt(glm::vec3(0, 100.0f, 0), glm::vec3(0, 0, 0), glm::vec3(0.0, 0.0, 1.0));
+	glm::mat4 projection = glm::ortho(0.f, 150.f, 0.0f, 150.0f, 0.1f, 200.0f);
+
+
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
 	//Send variables to shader
+	shader->setMat4("projection", projection);
+	shader->setMat4("view", view);
+	//glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 model = glm::translate(glm::vec3(-GroundSize, 0.0f, 0.0f));
+	shader->setMat4("model", model);
 
 	shader->setVec3("BigNoise", BigNoise);
 	shader->setVec3("SmallNoise", SmallNoise);
 	shader->setVec2("GroundHeight", GroundHeight);
 	shader->setFloat("GroundSize", GroundSize);
 	shader->setFloat("SmallHeight", GroundSmallHeight);
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
-	glEnable(GL_DEPTH_TEST);
+
 	//Bind the VAO and draw the vertex
 	glBindVertexArray(VAO);
 	//glDrawArrays(GL_TRIANGLES, 0, 2*SIZE*SIZE);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
-	int *data = new int[800 * 600 ];
-	glReadPixels(0, 0,800, 600, GL_RED, GL_INT, data);
+	//Bind the VAO and draw the vertex
+	glBindVertexArray(VAO);
+	//glDrawArrays(GL_TRIANGLES, 0, 2*SIZE*SIZE);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
 
-	std::cout <<"Depth "  << data[300*400] << std::endl;
+	glReadPixels(0, 0, SCR_WIDTH, SCR_WIDTH, GL_GREEN, GL_FLOAT, data);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

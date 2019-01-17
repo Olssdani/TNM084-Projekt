@@ -2,13 +2,14 @@
 #include "Utilities.h"
 #include <list>
 #include <string>
+#include <vector>
 #include <iostream>
 
 
 class L_System3D
 {
 public:
-	L_System3D(std::string _Axiom, std::string _RuleX, std::string _RuleF, int _MaxDepth, glm::vec3 _StartDirection, float _RuleAngle, float _Length);
+	L_System3D(std::string _Axiom, std::string _RuleX, std::string _Rule1, std::string _Rule2, std::string _Rule3, int _MaxDepth, glm::vec3 _StartDirection, float _RuleAngle, float _Length);
 	~L_System3D();
 
 	std::list<Segment3D> CreateSystem();
@@ -16,6 +17,7 @@ public:
 private:
 	std::string RuleX;
 	std::string RuleF;
+	std::vector<std::string> Cases;
 	std::string Rules;
 	std::string Axiom;
 	float StartLength;

@@ -33,5 +33,6 @@ struct Segment3D
 	glm::vec3 Direction;
 	glm::vec3 Orto;
 	float width;
+	float length;
 
 };

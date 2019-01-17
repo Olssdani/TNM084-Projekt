@@ -9,11 +9,14 @@
 class Tree
 {
 public:
-	Tree(int _Edges, float _Thickness);
+	Tree(int _Edges=8, float _Thickness =1.0);
 	~Tree();
 	void Render(glm::mat4 projection, glm::mat4 view);
 	void UpdateShader();
-
+	void SetTranslation(glm::vec3 t);
+	void SetRotation(glm::vec3 r, float angle);
+	void SetScale(glm::vec3 s);
+	float y, x;
 private:
 	L_System3D * LSystem;
 	//Variables
@@ -27,5 +30,6 @@ private:
 	TriangleSoup sphere;
 	void CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
 	std::list<Segment3D> ends;
+	glm::mat4 S, T, R;
 };
 
