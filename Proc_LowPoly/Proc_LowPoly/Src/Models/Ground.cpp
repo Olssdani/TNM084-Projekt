@@ -112,7 +112,7 @@ void Ground::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &in
 				temp.Position.z = j * GroundSize;
 			}
 			else {
-				temp.Position.z = j * GroundSize - SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
+				temp.Position.z = j * GroundSize- SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
 			}
 			//temp.Position.z = j * GroundSize -SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
 			vert[x + y * VertexCount] = temp;

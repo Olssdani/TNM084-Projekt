@@ -61,7 +61,7 @@ int main()
 	GLFWmonitor* primary = glfwGetPrimaryMonitor();
 	const GLFWvidmode * mode = glfwGetVideoMode(primary);
 	GLFWwindow* window;
-	if (mode == NULL)
+	if (mode != NULL)
 	{
 		window = glfwCreateWindow(mode->width, mode->height, "Low Poly World", primary, NULL);
 	}
@@ -102,23 +102,23 @@ int main()
 	int groundSize = 150;
 	Ground ground(groundSize, 50);
 	Water water(groundSize,100);
-	std::vector<Fern> ferns(50);
+	std::vector<Fern> ferns(1);
 	ground.RenderHeight(MAP, MAP);
-	for (int i = 0; i < 50; i++)
-	{
-		float x = groundSize * ((float)rand() / RAND_MAX);
-		float y = groundSize * ((float)rand() / RAND_MAX);
-		ferns[i].SetTranslation(glm::vec3(x, ground.data[(int)x*(int)y]*ground.max, y));
+	//for (int i = 0; i < ferns.size(); i++)
+	//{
+	//	float x = groundSize * ((float)rand() / RAND_MAX);
+	//	float y = groundSize * ((float)rand() / RAND_MAX);
+	//	ferns[i].SetTranslation(glm::vec3(x, ground.data[(int)x*(int)y]*ground.max, y));
 
-		float r =360*((float)rand() / RAND_MAX);
-		ferns[i].SetRotation(glm::vec3(0.0, 1.0, 0.0), D2R * r);
+	//	float r =360*((float)rand() / RAND_MAX);
+	//	ferns[i].SetRotation(glm::vec3(0.0, 1.0, 0.0), D2R * r);
 
-		float s = 0.05 + 0.2*((float)rand() / RAND_MAX);
-		ferns[i].SetScale(glm::vec3(s, s, s));
-		
-	}
+	//	float s = 0.05 + 0.2*((float)rand() / RAND_MAX);
+	//	ferns[i].SetScale(glm::vec3(s, s, s));
+	//	
+	//}
 	//Fern fern;
-	std::vector<Tree> trees(50);
+	std::vector<Tree> trees(20);
 	float min =1.0f;
 	float max = 0.0f;
 	for (int i = 0; i < trees.size(); i++)
@@ -159,7 +159,7 @@ int main()
 	std::cout << "Max: " << max << " Min: " << min << std::endl;
 	
 	
-	//Tree tree(8, 1.0);
+	Tree tree(8, 1.0);
 
 
 
@@ -207,7 +207,7 @@ int main()
 
 				trees[i].UpdateShader();
 			}
-			//tree.UpdateShader();
+			tree.UpdateShader();
 			std::cout << "New Shader loaded" << std::endl;
 		}	
 		
@@ -221,15 +221,15 @@ int main()
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
 		//Get the current view matrix;
 		glm::mat4 view = camera.View();
-		ground.Render(projection, view);
-		water.Render(projection, view);
+		//ground.Render(projection, view);
+		//water.Render(projection, view);
 		for (int i = 0; i < ferns.size(); i++)
 		{
 			ferns[i].Render(projection, view);
 		}
 		for (int i = 0; i < trees.size(); i++)
 		{
-			trees[i].Render(projection, view);
+			//trees[i].Render(projection, view);
 
 		}
 		
