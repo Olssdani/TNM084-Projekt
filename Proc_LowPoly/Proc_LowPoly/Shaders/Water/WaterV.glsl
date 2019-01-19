@@ -113,9 +113,11 @@ float snoise(vec3 v)
 void main()
 {
 	vec3 spos = aPos;
+  //Add noise to the water
 	spos.y = spos.y+0.5*snoise(vec3(0.1*spos.x, 0.1*spos.z, 0.4*Time));
 	spos.x = spos.x +0.5*snoise(vec3(0.2*spos.x, 0.1*spos.z, 0.4*Time));
   spos.z = spos.z +0.5*snoise(vec3(0.2*spos.x, 0.1*spos.z, 0.4*Time));
-    gl_Position = projection*view*model*vec4(spos, 1.0);
+  
+  gl_Position = projection*view*model*vec4(spos, 1.0);
 	pos = vec4(spos, 1.0).xyz; 
 }  

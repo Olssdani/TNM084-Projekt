@@ -1,7 +1,7 @@
 #include "L_System2D.h"
 
 
-
+//Constructor
 L_System2D::L_System2D(std::string _Axiom, std::string _RuleX, std::string _RuleF, int _MaxDepth, float _StartAngle, float _RuleAngle, float _Length)
 {
 	
@@ -73,9 +73,9 @@ std::list<Segment> L_System2D::CreateSystem()
 
 }
 
-std::string L_System2D::CreatePoints(std::string rules, Point start, float Angle, float Length)
+std::string L_System2D::CreatePoints(std::string rules, glm::vec2 start, float Angle, float Length)
 {
-	Point End;
+	glm::vec2 End;
 	Segment temp;
 	//Loop until no more rules
 	while (rules.length() > 0)
@@ -99,22 +99,26 @@ std::string L_System2D::CreatePoints(std::string rules, Point start, float Angle
 		}
 		else if (StateChar == "F")
 		{
+			//End pos = start pos + the length*unit circle
 			End.x = start.x + Length * cos(Angle);
 			End.y = start.y + Length * sin(Angle);
 			temp.start = start;
 			temp.end = End;
 			temp.Type = RegularL;
 			Rsegments.push_back(temp);
+			//Set the start to the end
 			start.x = End.x;
 			start.y = End.y;
 
 		}
 		else if (StateChar == "[")
 		{
+			//recursive call
 			rules = CreatePoints(rules, start, Angle, Length);
 		}
 		else if (StateChar == "]")
 		{
+			//Go back
 			return rules;
 		}
 		else if (StateChar == "-")

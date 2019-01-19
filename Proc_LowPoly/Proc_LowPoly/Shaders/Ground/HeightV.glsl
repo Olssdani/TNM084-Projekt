@@ -111,16 +111,14 @@ void main()
     pos =aPos;
     float i = pos.x/GroundSize; 
     float j =pos.z/GroundSize; 
-    //pos.x = pos.x + 20*snoise(vec3(5*i, 10*j, 0.5));
-    //pos.z = pos.z +20*snoise(vec3(0.5*i, 0.6*j, 0.5));
-    pos.y = 0.0 +max(GroundHeight.y,GroundHeight.x * ( snoise(vec3(BigNoise.x*i, BigNoise.y*j, BigNoise.z)))) + SmallHeight*snoise(vec3(SmallNoise.x*i, SmallNoise.y*j, SmallNoise.z));
-
+    pos.y = min(100.0,max(-100.0,0.0 +max(GroundHeight.y,GroundHeight.x * ( snoise(vec3(BigNoise.x*i, BigNoise.y*j, BigNoise.z)))) + SmallHeight*snoise(vec3(SmallNoise.x*i, SmallNoise.y*j, SmallNoise.z))));
 
 
     gl_Position = projection*view*model*vec4(pos, 1.0);
  
-    float temp = pos.y /GroundHeight.x;
-    ourColor = vec3(0.0, temp,0.0); 
+     //Normalize the value between max and min
+    float temp = (pos.y+100.0)/200.0; 
+    ourColor = vec3(temp, temp,temp); 
   
    // set ourColor to the input color we got from the vertex data
 }  

@@ -10,7 +10,9 @@
 #include "Utilities.h"
 
 
-
+/*
+	Class to create water
+*/
 class Water
 {
 public:
@@ -18,6 +20,7 @@ public:
 	~Water();
 	void Render(glm::mat4 projection, glm::mat4 view);
 	void UpdateShader();
+	//Change the height of the water
 	void WaterHeight(float a);
 
 private:
@@ -29,7 +32,7 @@ private:
 	unsigned int VertexCount;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-
+	//Function
 	void CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
 };
 

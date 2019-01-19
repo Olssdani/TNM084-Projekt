@@ -6,7 +6,9 @@
 #include <stdlib.h> 
 #include <vector>
 #include "Utilities.h"
-
+/*
+	Class for generating the ground
+*/
 class Ground
 {
 public:
@@ -25,7 +27,9 @@ public:
 	void SetGroundNoise(glm::vec3 Noise);
 	void SetSmallHeight(float Heights);
 
+	//Render the height data
 	void RenderHeight(unsigned int &SCR_WIDTH, unsigned int &SCR_HEIGHT);
+	//Data for height
 	float data[150 * 150];
 	float max;
 private:
@@ -43,7 +47,7 @@ private:
 	glm::vec3 SmallNoise;
 
 	//Functions
-	//Creates the floor
+	//Creates the ground
 	void CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind);
 	
 };

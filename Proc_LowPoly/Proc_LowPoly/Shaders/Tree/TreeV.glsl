@@ -133,7 +133,9 @@ void main()
 {
 	vec3 Transtemp = (model*vec4(aPos, 1.0)).xyz;
 	vec3 NoisePos;
-	if(Stem)
+  
+	//if it is the stem add no noise
+  if(Stem)
 	{
 		NoisePos = aPos;
 	}else{
@@ -141,11 +143,9 @@ void main()
 		NoisePos.y = aPos.y +0.1*snoise(vec4(0.2*Transtemp.x,0.5*Transtemp.y,0.2*Transtemp.z, 3.0));
 		NoisePos.z = aPos.z +0.4*snoise(vec4(0.7*Transtemp.x,0.3*Transtemp.y,0.8*Transtemp.z, 0.5));
 	}
-    gl_Position = projection*view*model*vec4(NoisePos, 1.0);
+  gl_Position = projection*view*model*vec4(NoisePos, 1.0);
  	ourColor = color;
 	pos = NoisePos;
-    
-   // set ourColor to the input color we got from the vertex data
 }  
 
 

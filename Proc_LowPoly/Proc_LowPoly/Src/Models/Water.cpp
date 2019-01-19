@@ -8,10 +8,11 @@ Water::Water(unsigned int _WaterSize, unsigned int _VertexCount)
 	ypos = -5.0f;
 	//Shader
 	shader = new Shader("Shaders/Water/WaterV.glsl", "Shaders/Water/WaterF.glsl", "Shaders/Water/WaterG.glsl");
+	//Variables
 	WaterSize = _WaterSize;
 	VertexCount = _VertexCount;
 
-
+	//Resize vectors
 	vertices.resize(VertexCount*VertexCount);
 	indices.resize((VertexCount - 1)*(VertexCount - 1) * 3 * 2);
 	CreateMesh(vertices, indices);
@@ -40,7 +41,7 @@ Water::Water(unsigned int _WaterSize, unsigned int _VertexCount)
 	glBindVertexArray(0);
 }
 
-
+//Delte
 Water::~Water()
 {
 	delete shader;

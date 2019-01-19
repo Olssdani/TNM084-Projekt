@@ -50,7 +50,7 @@ Ground::Ground(int _GroundSize, int _VertexCount)
 
 }
 
-
+//Delete
 Ground::~Ground()
 {
 	glDeleteVertexArrays(1, &VAO);
@@ -82,7 +82,6 @@ void Ground::Render(glm::mat4 projection, glm::mat4 view)
 
 	//Bind the VAO and draw the vertex
 	glBindVertexArray(VAO);
-	//glDrawArrays(GL_TRIANGLES, 0, 2*SIZE*SIZE);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
 }
@@ -99,22 +98,30 @@ void Ground::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &in
 		{
 			float i = (float)x / (VertexCount-1);
 
+			//Check if it is a edge and if it is then don't add the random to it so it is still squared
 			if (x == 0 || x == VertexCount - 1)
 			{
+				// No random
 				temp.Position.x = i * GroundSize;
 			}
 			else {
+				//Random offset
 				temp.Position.x = i * GroundSize - SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
 			}
-			temp.Position.y = 0.0f; //std::max(2.0f, 40.0f * abs(noise3(20.0f*i, 50.0f*j, 0.5))) + 1.0f*noise3(20.0f*i, 15.0f*j, 0.5);
+			// Y position
+			temp.Position.y = 0.0f;
+			
+			//Check if it is a edge and if it is then don't add the random to it so it is still squared
 			if (y == 0 || y == VertexCount - 1)
 			{
+				//No random
 				temp.Position.z = j * GroundSize;
 			}
 			else {
+				//Random offset
 				temp.Position.z = j * GroundSize- SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
 			}
-			//temp.Position.z = j * GroundSize -SquareSize + SquareSize * (float)rand() / (2 * RAND_MAX);
+			//Add the vertex
 			vert[x + y * VertexCount] = temp;
 		}
 	}
@@ -169,6 +176,10 @@ void Ground::SetSmallHeight(float Heights)
 
 void Ground::RenderHeight(unsigned int &SCR_WIDTH,unsigned int &SCR_HEIGHT)
 {
+	/*
+		This function is not optimal since we redeclare all variables everytime, but it is in a prototype state
+	*/
+
 	// framebuffer configuration
 	// -------------------------
 	unsigned int framebuffer;
@@ -193,10 +204,10 @@ void Ground::RenderHeight(unsigned int &SCR_WIDTH,unsigned int &SCR_HEIGHT)
 		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
-	
+	//Start
 	shaderH->use();
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
+	//Crate view and projection matrix
 	glm::mat4 view = glm::lookAt(glm::vec3(0, 100.0f, 0), glm::vec3(0, 0, 0), glm::vec3(0.0, 0.0, 1.0));
 	glm::mat4 projection = glm::ortho(0.f, 150.f, 0.0f, 150.0f, 0.1f, 200.0f);
 
@@ -226,7 +237,7 @@ void Ground::RenderHeight(unsigned int &SCR_WIDTH,unsigned int &SCR_HEIGHT)
 	//glDrawArrays(GL_TRIANGLES, 0, 2*SIZE*SIZE);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
-
+	//Read the FBO to the data variable
 	glReadPixels(0, 0, SCR_WIDTH, SCR_WIDTH, GL_GREEN, GL_FLOAT, data);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -8,30 +8,36 @@ Fern::Fern()
 	glGenVertexArrays(4, VAO);
 	glGenBuffers(4, VBO);
 	glGenBuffers(4, EBO);
+	//Connect shader
 	shader = new Shader("Shaders/Fern/FernV.glsl", "Shaders/Fern/FernF.glsl", "Shaders/Fern/FernG.glsl");
-	//Create the different leafs
+	//Set the transformation matrix to unit matrix
 	S = T = R = glm::mat4(1.0f);
+	
+	//Create the different leafs
 	for (int i = 0; i < 4; i++)
 	{	
+		/*
+			Create the modell
+		*/
+		//Set the L-system
 		LSystem = new L_System2D("X", "[-X]FFF-FF-F0", "F", 2, M_PI / 2.0f- 10*D2R- 30.0*((float)rand() / RAND_MAX)*D2R, 30.0f*D2R, 1.0f);
+		//Get the structure
 		Structure = LSystem->CreateSystem();
+		//Allocate the space for the vertices and indices
 		vertices.clear();
 		indices.clear();
 		vertices.resize((Structure.size() * 4 + 4) * 3);
 		indices.resize(Structure.size() * 4 * 3 * 2);
+		//Create the mesh
 		CreateMesh(vertices, indices);
-
-
 
 		//Bind the vertex buffer object
 		glBindVertexArray(VAO[i]);
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[i]);
-		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -42,14 +48,16 @@ Fern::Fern()
 		//Unbind the VAO
 		glBindVertexArray(0);
 	}
+	//Clear variables.
 	IndicesSize = indices.size();
 	indices.clear();
 	vertices.clear();
 
 }
-
+//Create mesh
 void Fern::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 {
+	//Set local variables
 	Vertex temp;
 	int counter = 0;
 	float down = 0.3;
@@ -84,11 +92,13 @@ void Fern::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 
 	for each (Segment seg in Structure)
 	{
+		//Local variables
 		float width;
 		float height;
 		float depth;
 		float lower;
-		//float 
+		
+		//If the segment is an end segment
 		if (seg.Type == EndL)
 		{
 			width = 0.0f;
@@ -96,6 +106,7 @@ void Fern::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 			depth = seg.end.x;
 			lower = 0.0f;
 		}
+		//if it is a regular segment
 		else if (seg.Type == RegularL)
 		{
 			width = 0.7;
@@ -134,6 +145,7 @@ void Fern::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 	}
 	counter = 7;
 
+	//Loop over all vertices and create the mesh
 	for (int i = 0; i <Structure.size()*8*3; i = i + 24)
 	{
 
@@ -214,12 +226,14 @@ void Fern::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 	}
 
 }
+//Update shader
 void Fern::UpdateShader()
 {
 	glDeleteProgram(shader->ID);
 	shader = new Shader("Shaders/Fern/FernV.glsl", "Shaders/Fern/FernF.glsl", "Shaders/Fern/FernG.glsl");
 }
 
+//Render
 void Fern::Render(glm::mat4 projection, glm::mat4 view)
 {
 	//Start shader
@@ -255,6 +269,7 @@ void Fern::Render(glm::mat4 projection, glm::mat4 view)
 	
 
 }
+//Delete all 
 Fern::~Fern()
 {
 	delete shader;
