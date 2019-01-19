@@ -2,6 +2,10 @@
 layout (location = 0) in vec3 aPos;   // the position variable has attribute position 0
   
 out vec3 ourColor; // output a color to the fragment shader
+out vec3 pos;
+uniform mat4 view;
+uniform mat4 projection;
+uniform mat4 model;
 uniform vec2 GroundHeight;
 uniform vec3 BigNoise;
 uniform vec3 SmallNoise;
@@ -104,15 +108,19 @@ float snoise(vec3 v)
 
 void main()
 {
-    vec3 pos =aPos;
+    pos =aPos;
     float i = pos.x/GroundSize; 
     float j =pos.z/GroundSize; 
-    pos.y = pos.y +max(GroundHeight.y,GroundHeight.x * ( snoise(vec3(BigNoise.x*i, BigNoise.y*j, BigNoise.z)))) + SmallHeight*snoise(vec3(SmallNoise.x*i, SmallNoise.y*j, SmallNoise.z));
+    //pos.x = pos.x + 20*snoise(vec3(5*i, 10*j, 0.5));
+    //pos.z = pos.z +20*snoise(vec3(0.5*i, 0.6*j, 0.5));
+    pos.y = 0.0 +max(GroundHeight.y,GroundHeight.x * ( snoise(vec3(BigNoise.x*i, BigNoise.y*j, BigNoise.z)))) + SmallHeight*snoise(vec3(SmallNoise.x*i, SmallNoise.y*j, SmallNoise.z));
 
 
 
-    gl_Position =vec4(pos, 1.0);
-    float temp = pos.y;
-    ourColor = vec3(temp,temp,temp);
+    gl_Position = projection*view*model*vec4(pos, 1.0);
  
+    float temp = pos.y /GroundHeight.x;
+    ourColor = vec3(0.0, temp,0.0); 
+  
+   // set ourColor to the input color we got from the vertex data
 }  

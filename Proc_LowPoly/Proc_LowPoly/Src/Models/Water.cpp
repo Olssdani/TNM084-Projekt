@@ -47,6 +47,8 @@ Water::~Water()
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
+	indices.clear();
+	vertices.clear();
 }
 
 void Water::Render(glm::mat4 projection, glm::mat4 view)

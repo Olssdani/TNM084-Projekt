@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "shader.h"
@@ -13,7 +14,7 @@
 #include "Utilities.h"
 #include "L-System\L_System3D.h"
 #include "Models\Tree.h"
-
+//#include <vld.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -21,12 +22,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void process_Ground(GLFWwindow *window, Ground &ground);
 void process_Water(GLFWwindow *window, Water &water);
+double displayFPS(GLFWwindow *window);
 
 void updateTime();
 
 // settings
-unsigned int SCR_WIDTH = 1028;
-unsigned int SCR_HEIGHT = 768;
+unsigned int SCR_WIDTH = 900;
+unsigned int SCR_HEIGHT = 900;
+unsigned int MAP = 150;
 Camera camera(glm::vec3(0.0f, 50.0f, 10.0f));
 
 float lastX = SCR_WIDTH / 2.0f;
@@ -58,7 +61,7 @@ int main()
 	GLFWmonitor* primary = glfwGetPrimaryMonitor();
 	const GLFWvidmode * mode = glfwGetVideoMode(primary);
 	GLFWwindow* window;
-	if (mode == NULL)
+	if (mode != NULL)
 	{
 		window = glfwCreateWindow(mode->width, mode->height, "Low Poly World", primary, NULL);
 	}
@@ -96,9 +99,66 @@ int main()
 	printf("Desktop size:    %d x %d pixels\n", mode->width, mode->height);
 
 	//Objects
-	Ground ground(150, 50);
-	Water water(150,100);
-	Fern fern;
+	int groundSize = 150;
+	Ground ground(groundSize, 50);
+	Water water(groundSize,100);
+	std::vector<Fern> ferns(1);
+	ground.RenderHeight(MAP, MAP);
+	//for (int i = 0; i < ferns.size(); i++)
+	//{
+	//	float x = groundSize * ((float)rand() / RAND_MAX);
+	//	float y = groundSize * ((float)rand() / RAND_MAX);
+	//	ferns[i].SetTranslation(glm::vec3(x, ground.data[(int)x*(int)y]*ground.max, y));
+
+	//	float r =360*((float)rand() / RAND_MAX);
+	//	ferns[i].SetRotation(glm::vec3(0.0, 1.0, 0.0), D2R * r);
+
+	//	float s = 0.05 + 0.2*((float)rand() / RAND_MAX);
+	//	ferns[i].SetScale(glm::vec3(s, s, s));
+	//	
+	//}
+	//Fern fern;
+	std::vector<Tree> trees(20);
+	float min =1.0f;
+	float max = 0.0f;
+	for (int i = 0; i < trees.size(); i++)
+	{
+		float x = (groundSize * ((float)rand() / RAND_MAX));
+		float y = (groundSize * ((float)rand() / RAND_MAX));
+		float Tree_Placement = pow((float)rand() / RAND_MAX,2);
+		float Place_noise = (noise3(x / groundSize, y / groundSize, 0.5)+1.0)*0.5;
+		if (min > Place_noise)
+		{
+			min = Place_noise;
+		}
+		if (max < Place_noise)
+		{
+			max = Place_noise;
+		}
+
+		
+		if ( Place_noise <0.2 || Tree_Placement >Place_noise )
+		{
+			i--;
+		}
+		else {
+
+			trees[i].SetTranslation(glm::vec3(x, ground.data[(int)x*(int)y] * ground.max, y));
+			trees[i].x = x;
+			trees[i].y = y;
+			float r = 360 * ((float)rand() / RAND_MAX);
+			trees[i].SetRotation(glm::vec3(0.0, 1.0, 0.0), D2R * r);
+
+			float s = 0.2 + 0.3*((float)rand() / RAND_MAX);
+			trees[i].SetScale(glm::vec3(s, s, s));
+		}
+
+		//std::cout << i << std::endl;
+	}
+
+	std::cout << "Max: " << max << " Min: " << min << std::endl;
+	
+	
 	Tree tree(8, 1.0);
 
 
@@ -108,6 +168,7 @@ int main()
 	glCullFace(GL_BACK);
 	// render loop
 	// -----------
+	
 	while (!glfwWindowShouldClose(window))
 	{
 		//Update delta time
@@ -117,6 +178,10 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		{
 			process_Ground(window, ground);
+			for (int i = 0; i < trees.size(); i++)
+			{
+				trees[i].SetTranslation(glm::vec3(trees[i].x, ground.data[(int)trees[i].x *(int)trees[i].y] * ground.max, trees[i].y));
+			}
 		}
 		else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 		{
@@ -132,11 +197,19 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_SPACE)) {
 			ground.UpdateShader();
 			water.UpdateShader();
-			fern.UpdateShader();
+			for (int i = 0; i < ferns.size(); i++)
+			{
+
+				ferns[i].UpdateShader();
+			}
+			for (int i = 0; i < trees.size(); i++)
+			{
+
+				trees[i].UpdateShader();
+			}
 			tree.UpdateShader();
 			std::cout << "New Shader loaded" << std::endl;
-		}
-		//ground.RenderHeight(SCR_WIDTH, SCR_HEIGHT);
+		}	
 		
 		
 		// rende//r
@@ -148,11 +221,21 @@ int main()
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
 		//Get the current view matrix;
 		glm::mat4 view = camera.View();
-		ground.Render(projection, view);
-		water.Render(projection, view);
-		//fern.Render(projection, view);
-		tree.Render(projection, view);
+		//ground.Render(projection, view);
+		//water.Render(projection, view);
+		for (int i = 0; i < ferns.size(); i++)
+		{
+			ferns[i].Render(projection, view);
+		}
+		for (int i = 0; i < trees.size(); i++)
+		{
+			//trees[i].Render(projection, view);
 
+		}
+		
+		
+		//Show fps
+		displayFPS(window);
 		//std::cout << SCR_HEIGHT << " " << SCR_WIDTH << std::endl;
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
@@ -215,6 +298,7 @@ void process_Ground(GLFWwindow *window, Ground &ground)
 		ground.SetSmallHeight(0.2f);
 	if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
 		ground.SetSmallHeight(-0.2f);
+	ground.RenderHeight(MAP, MAP);
 	
 }
 
@@ -297,4 +381,30 @@ void updateTime()
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
+}
+double displayFPS(GLFWwindow *window) {
+
+	static double t0 = 0.0;
+	static int frames = 0;
+	double fps = 0.0;
+	double frametime = 0.0;
+	static char titlestring[200];
+
+	double t;
+
+	// Get current time
+	t = glfwGetTime();  // Gets number of seconds since glfwInit()
+						// If one second has passed, or if this is the very first frame
+	if ((t - t0) > 1.0 || frames == 0)
+	{
+		fps = (double)frames / (t - t0);
+		if (frames > 0) frametime = 1000.0 * (t - t0) / frames;
+		sprintf(titlestring, "TNM046, %.2f ms/frame (%.1f FPS)", frametime, fps);
+		glfwSetWindowTitle(window, titlestring);
+		// printf("Speed: %.1f FPS\n", fps);
+		t0 = t;
+		frames = 0;
+	}
+	frames++;
+	return fps;
 }

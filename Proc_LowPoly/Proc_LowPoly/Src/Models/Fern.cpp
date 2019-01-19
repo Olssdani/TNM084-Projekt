@@ -10,6 +10,7 @@ Fern::Fern()
 	glGenBuffers(4, EBO);
 	shader = new Shader("Shaders/Fern/FernV.glsl", "Shaders/Fern/FernF.glsl", "Shaders/Fern/FernG.glsl");
 	//Create the different leafs
+	S = T = R = glm::mat4(1.0f);
 	for (int i = 0; i < 4; i++)
 	{	
 		LSystem = new L_System2D("X", "[-X]FFF-FF-F0", "F", 2, M_PI / 2.0f- 10*D2R- 30.0*((float)rand() / RAND_MAX)*D2R, 30.0f*D2R, 1.0f);
@@ -41,7 +42,9 @@ Fern::Fern()
 		//Unbind the VAO
 		glBindVertexArray(0);
 	}
-	
+	IndicesSize = indices.size();
+	indices.clear();
+	vertices.clear();
 
 }
 
@@ -228,19 +231,26 @@ void Fern::Render(glm::mat4 projection, glm::mat4 view)
 
 	for (int i = 0; i < 4; i++)
 	{
-		float angle = (float)i*90*D2R;
-		glm::mat4 translate = glm::translate(glm::vec3(0.5, 0.0, 0.0));
 		glm::mat4 model = glm::mat4(1.0f);
-		model = model * glm::scale(glm::vec3(1.0, 1.0, 1.0));
+		//Move the modell
+
+		model = model * T;
+		model = model * R;
+		model = model * S;
+
+		//Set up the modell
+		float angle = (float)i*90*D2R;
 		model = glm::rotate(model, angle, glm::vec3(0.0, 1.0, 0.0) );
+		glm::mat4 translate = glm::translate(glm::vec3(0.5, 0.0, 0.0));
 		model = model *translate;
+
 		
 		shader->setMat4("model", model);
 
 		//Bind the VAO and draw the vertex
 		glBindVertexArray(VAO[i]);
 		//glDrawArrays(GL_TRIANGLES, 0, 2*SIZE*SIZE);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, IndicesSize, GL_UNSIGNED_INT, 0);
 	}
 	
 
@@ -253,114 +263,15 @@ Fern::~Fern()
 	glDeleteBuffers(4, EBO);
 }
 
-
-
-
-//Vertex temp;
-//int counter = 0;
-//float down = 0.3;
-//
-////Left Start vertex
-//temp.Position.x = 0;
-//temp.Position.y = -down;
-//temp.Position.z = -0.2f;
-//vert[counter] = temp;
-//counter++;
-
-////Middle vertex
-//temp.Position.x = 0;
-//temp.Position.y = -down;
-//temp.Position.z = 0;
-//vert[counter] = temp;
-//counter++;
-
-////Right vertex
-//temp.Position.x = 0;
-//temp.Position.y = -down;
-//temp.Position.z = 0.2f;
-//vert[counter] = temp;
-//counter++;
-//
-//for each (Segment seg in Structure)
-//{
-//	float width;
-//	float height;
-//	float depth;
-//	//float 
-//	if (seg.Type == EndL)
-//	{
-//		width = 0.0f;
-//		height = seg.end.y;
-//		depth = seg.end.x;
-//	}
-//	else if (seg.Type == RegularL)
-//	{
-//		width = 1.0;
-//		height = seg.end.y;
-//		depth = seg.end.x;
-//	}
-//	//Left vertex
-//	temp.Position.x = depth;
-//	temp.Position.y = height - down;
-//	temp.Position.z = -width;
-//	vert[counter] = temp;
-//	counter++;
-
-//	//Middle vertex
-//	temp.Position.x = depth;
-//	temp.Position.y = height;
-//	temp.Position.z = 0;
-//	vert[counter] = temp;
-//	counter++;
-
-//	//Right vertex
-//	temp.Position.x = depth;
-//	temp.Position.y = height - down;
-//	temp.Position.z = width;
-//	vert[counter] = temp;
-//	counter++;
-//}
-//counter = 5;
-//
-//for(int i =0; i <Structure.size()*2*6;i = i+12)
-//{
-//	
-//	if (i!=0 &&abs((double)(Structure.size() * 2 * 6) / (i) -2)<0.0001)
-//	{
-//		ind[i] = 0;
-//		ind[i + 1] = counter - 1;
-//		ind[i + 2] = counter - 2;
-
-//		ind[i + 3] = 0;
-//		ind[i + 4] = 1;
-//		ind[i + 5] = counter - 1;
-
-//		ind[i + 6] = counter - 1;
-//		ind[i + 7] = 1;
-//		ind[i + 8] = 2;
-
-//		ind[i + 9] = counter - 1;
-//		ind[i + 10] = 2;
-//		ind[i + 11] = counter;
-
-//	}
-//	else {
-//		ind[i] = counter - 5;
-//		ind[i + 1] = counter - 1;
-//		ind[i + 2] = counter - 2;
-
-//		ind[i + 3] = counter - 5;
-//		ind[i + 4] = counter - 4;
-//		ind[i + 5] = counter - 1;
-
-//		ind[i + 6] = counter - 1;
-//		ind[i + 7] = counter - 4;
-//		ind[i + 8] = counter - 3;
-
-//		ind[i + 9] = counter - 1;
-//		ind[i + 10] = counter - 3;
-//		ind[i + 11] = counter;
-//		
-//	}
-//	counter = counter + 3;
-//}
+void Fern::SetTranslation(glm::vec3 t)
+{
+	T = glm::translate(t);
+}
+void Fern::SetRotation(glm::vec3 r, float angle)
+{
+	R = glm::rotate(glm::mat4(1.0f), angle, r);
+}
+void Fern::SetScale(glm::vec3 s) 
+{
+	S = glm::scale(s);
+}

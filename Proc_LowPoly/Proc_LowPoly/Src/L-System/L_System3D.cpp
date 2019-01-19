@@ -2,11 +2,14 @@
 
 
 
-L_System3D::L_System3D(std::string _Axiom, std::string _RuleX, std::string _RuleF, int _MaxDepth, glm::vec3 _StartDirection, float _RuleAngle, float _Length)
+L_System3D::L_System3D(std::string _Axiom, std::string _Rule1, std::string _Rule2, std::string _Rule3, std::string _RuleF,int _MaxDepth, glm::vec3 _StartDirection, float _RuleAngle, float _Length)
 {
-
+	Cases.resize(3);
+	Cases[0] = _Rule1;
+	Cases[1] = _Rule2;
+	Cases[2] = _Rule3;
 	Axiom = _Axiom;
-	RuleX = _RuleX;
+	RuleX = "";
 	RuleF = _RuleF;
 	StartLength = _Length;
 	Rules = "";
@@ -86,6 +89,19 @@ std::string L_System3D::CreateRules(std::string state, int depth)
 		}
 		else if (StateChar == "X")
 		{
+			float r =((float)rand() / RAND_MAX);
+			//r = 0.5f;
+			if (r < 0.33)
+			{
+				RuleX = Cases[0];
+			}
+			else if (r < 0.67)
+			{
+				RuleX = Cases[1];
+			}
+			else {
+				RuleX = Cases[2];
+			}
 			Result = Result.append(CreateRules(RuleX, depth + 1));
 		}
 		state = state.substr(1, state.length());
@@ -96,7 +112,7 @@ std::string L_System3D::CreateRules(std::string state, int depth)
 std::list<Segment3D> L_System3D::CreateSystem() //std::list<Segment>
 {
 	Rules = CreateRules(Axiom, 0);
-	std::cout << Rules << std::endl;
+	//std::cout << Rules << std::endl;
 	CreatePoints(Rules, StartPosition, StartDirection, orto, StartLength, 1.0);
 
 
@@ -152,6 +168,7 @@ std::string L_System3D::CreatePoints(std::string rules, glm::vec3 start, glm::ve
 			temp.Direction = Direction;
 			temp.Orto = OrthoVec;
 			temp.width = Width;
+			temp.length = Length;
 			Rsegments.push_back(temp);
 			start = End;
 		}
@@ -159,7 +176,7 @@ std::string L_System3D::CreatePoints(std::string rules, glm::vec3 start, glm::ve
 		{
 			//OPen new branch
 			Rsegments.back().type = BranchL;
-			rules = CreatePoints(rules, start, Direction, OrthoVec, Length, Width*0.5 );
+			rules = CreatePoints(rules, start, Direction, OrthoVec, Length*0.5, Width*0.5 );
 		}
 		else if (StateChar == "]")
 		{

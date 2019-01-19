@@ -5,6 +5,7 @@
 Tree::Tree(int _Edges, float _Thickness)
 {
 	Thickness = _Thickness;
+	S = T = R = glm::mat4(1.0f);
 	shader = new Shader("Shaders/Tree/TreeV.glsl", "Shaders/Tree/TreeF.glsl", "Shaders/Tree/TreeG.glsl");
 	if (_Edges < 4)
 	{
@@ -14,10 +15,10 @@ Tree::Tree(int _Edges, float _Thickness)
 	{
 		Edges = _Edges;
 	}
-	L_System3D L("X", "FFF[+{&FFF0]FF[&\X]FFF0", "FF", 2, glm::vec3(0.0, 1.0, 0.0), 45, 1.0f);
+	L_System3D L("X", "FFF[+{&FFX0]FF0","FFF[-&}FFX0]FF[^{&FF0]FFF0","FFFFX0", "FF", 3, glm::vec3(0.0, 1.0, 0.0), 45, 1.0f);
 	Structure = L.CreateSystem();
-	vertices.resize((Structure.size()*2)*Edges);
-	indices.resize((Structure.size()+10)*(Edges*2*3));
+	vertices.resize((Structure.size()*5)*Edges);
+	indices.resize((Structure.size()+20)*(Edges*2*3));
 	CreateMesh(vertices, indices);
 
 	for each (Segment3D seg in Structure)
@@ -60,17 +61,24 @@ Tree::~Tree()
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
+	indices.clear();
+	vertices.clear();
 }
 
 void Tree::Render(glm::mat4 projection, glm::mat4 view)
 {
 	//Start shader
 	shader->use();
+	glm::mat4 model = glm::mat4(1.0f);
+	//Move the modell
 
+	model = model * T;
+	model = model * R;
+	model = model * S;
 	//Send variables to shader
 	shader->setMat4("projection", projection);
 	shader->setMat4("view", view);
-	glm::mat4 model = glm::translate(glm::vec3(0.0, 0.0, 0.0));
+
 	shader->setMat4("model", model);
 	shader->setFloat("Time", glfwGetTime());
 	shader->setVec3("color", glm::vec3(0.6, 0.28, 0.08));
@@ -85,7 +93,11 @@ void Tree::Render(glm::mat4 projection, glm::mat4 view)
 	for each (Segment3D pos in ends)
 	{
 		shader->setVec3("color", glm::vec3(0.0, 0.5, 0.0));
-		model = glm::translate(pos.End)*glm::scale(glm::vec3(pos.width));
+		glm::mat4 model = glm::mat4(1.0f);
+		model = model * T;
+		model = model * R;
+		model = model * S;
+		model = model*glm::translate(pos.End)*glm::scale(glm::vec3(pos.width));
 		shader->setMat4("model", model);
 
 		shader->setBool("Stem", false);
@@ -175,4 +187,17 @@ void Tree::CreateMesh(std::vector<Vertex> &vert, std::vector<unsigned int> &ind)
 		}
 	}
 
+}
+
+void Tree::SetTranslation(glm::vec3 t)
+{
+	T = glm::translate(t);
+}
+void Tree::SetRotation(glm::vec3 r, float angle)
+{
+	R = glm::rotate(glm::mat4(1.0f), angle, r);
+}
+void Tree::SetScale(glm::vec3 s)
+{
+	S = glm::scale(s);
 }

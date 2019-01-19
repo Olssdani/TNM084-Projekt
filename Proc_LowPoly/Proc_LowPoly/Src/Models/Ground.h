@@ -26,7 +26,8 @@ public:
 	void SetSmallHeight(float Heights);
 
 	void RenderHeight(unsigned int &SCR_WIDTH, unsigned int &SCR_HEIGHT);
-
+	float data[150 * 150];
+	float max;
 private:
 	//Variables
 	Shader *shader, *shaderH;
