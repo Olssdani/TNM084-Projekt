@@ -6,18 +6,23 @@ This project will not be continued worked with since it was created during a ver
 
 ## Images
 
-![Test](https://github.com/Olssdani/TNM084-Projekt/blob/master/Bilder/Tree.png?raw=true "Title")
-
-
-
 ![Test](https://github.com/Olssdani/TNM084-Projekt/blob/master/Bilder/WorldHigh.png?raw=true "Title")
+The world!
+
+
+![Test](https://github.com/Olssdani/TNM084-Projekt/blob/master/Bilder/Tree.png?raw=true "Title")
+A tree!
+
+
+
 
 
 
 
 ![Test](https://github.com/Olssdani/TNM084-Projekt/blob/master/Bilder/Toft.png?raw=true "Title")
-
+A fern!
 
 
 
 ![Test](https://github.com/Olssdani/TNM084-Projekt/blob/master/Bilder/Trees.png?raw=true "Title")
+The placement of the trees are random however there is a treshold value that is compared against a perlin noise to make the placement of the trees be more like a forrest where there is trees in certain areas and no trees in others.
